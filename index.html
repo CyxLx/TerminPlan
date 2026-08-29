@@ -1,0 +1,2850 @@
+```html
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Moderne Online-Terminbuchung">
+
+    <title>Dein Termin | Online buchen</title>
+
+    <style>
+
+        /* =====================================
+           GRUNDLAGEN
+        ===================================== */
+
+        :root {
+            --black: #111111;
+            --dark: #1b1b1b;
+            --white: #ffffff;
+            --off-white: #f7f7f5;
+            --gray-100: #eeeeec;
+            --gray-200: #ddddda;
+            --gray-500: #777773;
+            --gray-700: #444440;
+            --accent: #d9ff4f;
+
+            --container: 1180px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            color: var(--black);
+            background: var(--white);
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .container {
+            width: min(
+                calc(100% - 48px),
+                var(--container)
+            );
+
+            margin: 0 auto;
+        }
+
+
+        /* =====================================
+           HEADER
+        ===================================== */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            background: rgba(255,255,255,0.95);
+
+            backdrop-filter: blur(15px);
+
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .nav {
+            min-height: 80px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.5;
+        }
+
+        .nav-button {
+            background: var(--black);
+            color: white;
+
+            padding: 12px 20px;
+
+            border-radius: 50px;
+        }
+
+        .menu-button {
+            display: none;
+
+            border: 0;
+            background: transparent;
+
+            width: 44px;
+            height: 44px;
+
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            gap: 5px;
+        }
+
+        .menu-button span {
+            width: 23px;
+            height: 2px;
+            background: black;
+        }
+
+
+        /* =====================================
+           HERO
+        ===================================== */
+
+        .hero {
+            background: var(--off-white);
+
+            padding: 100px 0 110px;
+        }
+
+        .hero-grid {
+            display: grid;
+
+            grid-template-columns: 1.1fr 0.9fr;
+
+            gap: 80px;
+
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            background: white;
+
+            border: 1px solid var(--gray-200);
+
+            padding: 8px 13px;
+
+            border-radius: 50px;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #83b900;
+        }
+
+        .hero h1 {
+            margin-top: 28px;
+
+            font-size: clamp(52px, 7vw, 88px);
+
+            line-height: 0.98;
+
+            letter-spacing: -5px;
+
+            font-weight: 900;
+        }
+
+        .hero h1 span {
+            color: var(--gray-500);
+        }
+
+        .hero-description {
+            max-width: 560px;
+
+            margin-top: 28px;
+
+            color: var(--gray-700);
+
+            font-size: 18px;
+
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 12px;
+
+            margin-top: 35px;
+        }
+
+        .button {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 15px;
+
+            min-height: 52px;
+
+            padding: 0 22px;
+
+            border-radius: 50px;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            transition: 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .button-dark {
+            background: var(--black);
+            color: white;
+        }
+
+        .button-light {
+            background: white;
+            border: 1px solid var(--gray-200);
+        }
+
+        .hero-stats {
+            display: flex;
+
+            gap: 35px;
+
+            margin-top: 55px;
+
+            padding-top: 25px;
+
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat strong {
+            font-size: 16px;
+        }
+
+        .stat span {
+            color: var(--gray-500);
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================
+           HERO KALENDER
+        ===================================== */
+
+        .calendar-card {
+            padding: 30px;
+
+            background: white;
+
+            border-radius: 24px;
+
+            box-shadow:
+                0 25px 70px rgba(0,0,0,0.08);
+        }
+
+        .calendar-top {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 30px;
+        }
+
+        .calendar-top small {
+            color: var(--gray-500);
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+        .calendar-top h3 {
+            margin-top: 5px;
+
+            font-size: 25px;
+        }
+
+        .calendar-symbol {
+            width: 46px;
+            height: 46px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
+
+            background: var(--off-white);
+
+            font-size: 20px;
+        }
+
+        .month {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+        }
+
+        .month button {
+            width: 34px;
+            height: 34px;
+
+            border: 0;
+
+            border-radius: 8px;
+
+            background: var(--off-white);
+
+            font-size: 20px;
+        }
+
+        .weekdays,
+        .days {
+            display: grid;
+
+            grid-template-columns:
+                repeat(7, 1fr);
+
+            text-align: center;
+        }
+
+        .weekdays {
+            margin-bottom: 8px;
+
+            color: var(--gray-500);
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+        .days {
+            gap: 4px;
+        }
+
+        .days div {
+            min-height: 40px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+        }
+
+        .muted {
+            color: #ccccca;
+        }
+
+        .selected-day {
+            background: var(--black);
+
+            color: white;
+
+            font-weight: 800;
+        }
+
+        .calendar-button {
+            width: 100%;
+
+            display: block;
+
+            margin-top: 25px;
+
+            padding: 15px;
+
+            border-radius: 11px;
+
+            background: var(--black);
+
+            color: white;
+
+            text-align: center;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        /* =====================================
+           LEISTUNGEN
+        ===================================== */
+
+        .section {
+            padding: 120px 0;
+        }
+
+        .section-header {
+            display: grid;
+
+            grid-template-columns: 1fr 0.55fr;
+
+            gap: 50px;
+
+            align-items: end;
+
+            margin-bottom: 55px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+
+            margin-bottom: 15px;
+
+            font-size: 11px;
+
+            font-weight: 900;
+
+            letter-spacing: 1.7px;
+        }
+
+        h2 {
+            font-size: clamp(40px, 5vw, 60px);
+
+            line-height: 1;
+
+            letter-spacing: -3px;
+        }
+
+        h2 span {
+            color: var(--gray-500);
+        }
+
+        .section-header p {
+            color: var(--gray-500);
+
+            font-size: 15px;
+        }
+
+        .services {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+        }
+
+        .service {
+            min-height: 320px;
+
+            padding: 34px;
+
+            border: 1px solid var(--gray-200);
+
+            border-radius: 18px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            transition: 0.25s;
+        }
+
+        .service:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.08);
+        }
+
+        .service.featured {
+            background: var(--black);
+
+            color: white;
+
+            border-color: var(--black);
+        }
+
+        .service-number {
+            width: 42px;
+            height: 42px;
+
+            display: grid;
+
+            place-items: center;
+
+            margin-bottom: 45px;
+
+            border-radius: 10px;
+
+            background: var(--off-white);
+
+            font-size: 11px;
+
+            font-weight: 900;
+        }
+
+        .featured .service-number {
+            background: #333;
+        }
+
+        .service h3 {
+            font-size: 25px;
+
+            letter-spacing: -1px;
+        }
+
+        .service p {
+            margin-top: 12px;
+
+            color: var(--gray-500);
+
+            font-size: 14px;
+        }
+
+        .featured p {
+            color: #aaa;
+        }
+
+        .service-bottom {
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-top: auto;
+
+            padding-top: 25px;
+
+            border-top: 1px solid var(--gray-200);
+
+            font-size: 12px;
+        }
+
+        .featured .service-bottom {
+            border-color: #333;
+        }
+
+        .service-bottom span {
+            color: var(--gray-500);
+        }
+
+
+        /* =====================================
+           ÜBER UNS
+        ===================================== */
+
+        .about {
+            padding: 120px 0;
+
+            background: var(--black);
+
+            color: white;
+        }
+
+        .about-grid {
+            display: grid;
+
+            grid-template-columns: 0.3fr 1fr;
+
+            gap: 80px;
+        }
+
+        .about-number {
+            color: #555;
+
+            font-size: 90px;
+
+            font-weight: 900;
+
+            letter-spacing: -7px;
+        }
+
+        .about h2 {
+            margin-bottom: 35px;
+        }
+
+        .about p {
+            max-width: 650px;
+
+            margin-bottom: 18px;
+
+            color: #aaa;
+
+            font-size: 17px;
+
+            line-height: 1.8;
+        }
+
+        .text-link {
+            display: inline-block;
+
+            margin-top: 20px;
+
+            padding-bottom: 5px;
+
+            border-bottom: 1px solid #777;
+
+            font-weight: 800;
+        }
+
+
+        /* =====================================
+           BUCHUNG
+        ===================================== */
+
+        .booking {
+            padding: 120px 0;
+
+            background: var(--off-white);
+        }
+
+        .booking-heading {
+            margin-bottom: 60px;
+        }
+
+        .booking-heading p {
+            margin-top: 20px;
+
+            color: var(--gray-500);
+        }
+
+        .booking-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 350px;
+
+            gap: 30px;
+
+            align-items: start;
+        }
+
+        .booking-form {
+            padding: 40px;
+
+            background: white;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 10px 40px rgba(0,0,0,0.04);
+        }
+
+        .step {
+            display: grid;
+
+            grid-template-columns: 55px 1fr;
+
+            gap: 20px;
+
+            padding-bottom: 40px;
+
+            margin-bottom: 40px;
+
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 10px;
+
+            background: var(--black);
+
+            color: white;
+
+            font-size: 11px;
+
+            font-weight: 900;
+        }
+
+        .step h3 {
+            margin-bottom: 24px;
+
+            font-size: 20px;
+        }
+
+        .form-group {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+            margin-bottom: 18px;
+        }
+
+        label {
+            font-size: 12px;
+
+            font-weight: 800;
+        }
+
+        label span {
+            color: var(--gray-500);
+
+            font-weight: 400;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+
+            padding: 14px 15px;
+
+            border: 1px solid var(--gray-200);
+
+            border-radius: 9px;
+
+            background: white;
+
+            color: black;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: black;
+
+            box-shadow:
+                0 0 0 3px rgba(0,0,0,0.06);
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 15px;
+        }
+
+        .checkbox {
+            display: flex;
+
+            flex-direction: row;
+
+            align-items: flex-start;
+
+            gap: 10px;
+
+            color: var(--gray-500);
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+        .checkbox input {
+            width: auto;
+
+            margin-top: 3px;
+        }
+
+        .submit {
+            width: 100%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 17px 20px;
+
+            border: 0;
+
+            border-radius: 11px;
+
+            background: black;
+
+            color: white;
+
+            font-weight: 800;
+
+            transition: 0.2s;
+        }
+
+        .submit:hover {
+            transform: translateY(-2px);
+        }
+
+        .form-note {
+            margin-top: 15px;
+
+            color: var(--gray-500);
+
+            font-size: 11px;
+
+            text-align: center;
+        }
+
+
+        /* =====================================
+           SIDEBAR
+        ===================================== */
+
+        .sidebar {
+            position: sticky;
+
+            top: 100px;
+        }
+
+        .sidebar-card {
+            padding: 32px;
+
+            background: black;
+
+            color: white;
+
+            border-radius: 20px;
+        }
+
+        .sidebar-card h3 {
+            margin-top: 18px;
+
+            font-size: 31px;
+
+            line-height: 1.05;
+
+            letter-spacing: -1.5px;
+        }
+
+        .sidebar-line {
+            height: 1px;
+
+            margin: 30px 0;
+
+            background: #333;
+        }
+
+        .sidebar-item {
+            display: flex;
+
+            gap: 12px;
+
+            margin-bottom: 20px;
+        }
+
+        .check {
+            width: 23px;
+            height: 23px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background: var(--accent);
+
+            color: black;
+
+            font-size: 11px;
+
+            font-weight: 900;
+        }
+
+        .sidebar-item p {
+            color: #ccc;
+
+            font-size: 13px;
+        }
+
+        .sidebar-contact {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 5px;
+
+            margin-top: 35px;
+
+            padding-top: 25px;
+
+            border-top: 1px solid #333;
+        }
+
+        .sidebar-contact small {
+            color: #777;
+
+            font-size: 9px;
+
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+        .sidebar-contact strong {
+            font-size: 13px;
+        }
+
+        .sidebar-contact span {
+            color: #999;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================
+           KONTAKT
+        ===================================== */
+
+        .contact {
+            padding: 110px 0;
+        }
+
+        .contact-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 100px;
+        }
+
+        .contact-details {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 30px;
+        }
+
+        .contact-details div {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 5px;
+        }
+
+        .contact-details small {
+            color: var(--gray-500);
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+        .contact-details a {
+            font-size: 18px;
+
+            font-weight: 700;
+        }
+
+        .contact-details p {
+            color: var(--gray-700);
+        }
+
+
+        /* =====================================
+           FOOTER
+        ===================================== */
+
+        footer {
+            padding: 30px 0;
+
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .footer-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr auto 1fr;
+
+            align-items: center;
+
+            gap: 30px;
+        }
+
+        .footer-links {
+            display: flex;
+
+            gap: 25px;
+
+            color: var(--gray-500);
+
+            font-size: 12px;
+        }
+
+        .copyright {
+            color: var(--gray-500);
+
+            font-size: 11px;
+
+            text-align: right;
+        }
+
+
+        /* =====================================
+           MODAL
+        ===================================== */
+
+        .modal {
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 3000;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(0,0,0,0.65);
+
+            opacity: 0;
+
+            visibility: hidden;
+
+            transition: 0.25s;
+        }
+
+        .modal.active {
+            opacity: 1;
+
+            visibility: visible;
+        }
+
+        .modal-box {
+            position: relative;
+
+            width: min(100%, 480px);
+
+            padding: 50px 40px;
+
+            background: white;
+
+            border-radius: 22px;
+
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+
+            top: 15px;
+            right: 18px;
+
+            width: 36px;
+            height: 36px;
+
+            border: 0;
+
+            border-radius: 50%;
+
+            background: var(--off-white);
+
+            font-size: 22px;
+        }
+
+        .success-icon {
+            width: 65px;
+            height: 65px;
+
+            display: grid;
+
+            place-items: center;
+
+            margin: 0 auto 25px;
+
+            border-radius: 50%;
+
+            background: black;
+
+            color: var(--accent);
+
+            font-size: 28px;
+
+            font-weight: 900;
+        }
+
+        .modal h2 {
+            font-size: 36px;
+
+            letter-spacing: -2px;
+
+            margin-bottom: 15px;
+        }
+
+        .modal p {
+            color: var(--gray-500);
+
+            font-size: 14px;
+        }
+
+        .modal-button {
+            border: 0;
+
+            margin-top: 25px;
+        }
+
+
+        /* =====================================
+           RESPONSIVE
+        ===================================== */
+
+        @media (max-width: 950px) {
+
+            .nav-links {
+                position: absolute;
+
+                top: 80px;
+
+                left: 0;
+                right: 0;
+
+                display: none;
+
+                flex-direction: column;
+
+                align-items: stretch;
+
+                padding: 20px 24px 25px;
+
+                background: white;
+
+                border-bottom: 1px solid var(--gray-200);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-button {
+                text-align: center;
+            }
+
+            .menu-button {
+                display: flex;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                grid-template-columns: 1fr;
+            }
+
+            .services {
+                grid-template-columns: 1fr;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-number {
+                display: none;
+            }
+
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+
+            .copyright {
+                text-align: center;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .container {
+                width:
+                    calc(100% - 32px);
+            }
+
+            .nav {
+                min-height: 70px;
+            }
+
+            .nav-links {
+                top: 70px;
+            }
+
+            .hero {
+                padding: 70px 0 80px;
+            }
+
+            .hero h1 {
+                font-size: 54px;
+
+                letter-spacing: -3px;
+            }
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+            .hero-stats {
+                gap: 20px;
+
+                flex-wrap: wrap;
+            }
+
+            .calendar-card {
+                padding: 22px;
+            }
+
+            .section,
+            .about,
+            .booking,
+            .contact {
+                padding: 80px 0;
+            }
+
+            h2 {
+                font-size: 42px;
+
+                letter-spacing: -2px;
+            }
+
+            .booking-form {
+                padding: 25px 20px;
+            }
+
+            .step {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-card {
+                padding: 25px;
+            }
+
+            .modal-box {
+                padding: 45px 25px;
+            }
+
+            .modal h2 {
+                font-size: 30px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<!-- ==========================================
+     NAVIGATION
+=========================================== -->
+
+<header>
+
+    <div class="container nav">
+
+        <a href="#home" class="logo">
+            DEIN<span>TERMIN</span>
+        </a>
+
+        <nav class="nav-links" id="navLinks">
+
+            <a href="#home">
+                Startseite
+            </a>
+
+            <a href="#leistungen">
+                Leistungen
+            </a>
+
+            <a href="#ueber-uns">
+                Über uns
+            </a>
+
+            <a href="#kontakt">
+                Kontakt
+            </a>
+
+            <a href="#buchung" class="nav-button">
+                Termin buchen
+            </a>
+
+        </nav>
+
+
+        <button
+            class="menu-button"
+            id="menuButton"
+            aria-label="Menü öffnen"
+        >
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- ==========================================
+     HERO
+=========================================== -->
+
+<section class="hero" id="home">
+
+    <div class="container hero-grid">
+
+
+        <div>
+
+            <div class="badge">
+
+                <span class="badge-dot"></span>
+
+                Online Terminbuchung
+
+            </div>
+
+
+            <h1>
+
+                Dein Termin.
+                <br>
+
+                <span>Einfach. Schnell.</span>
+
+            </h1>
+
+
+            <p class="hero-description">
+
+                Buche deinen persönlichen Termin bequem online.
+                Wähle eine passende Zeit aus und bestätige deine
+                Buchung in wenigen Schritten.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <a
+                    href="#buchung"
+                    class="button button-dark"
+                >
+                    Termin buchen
+                    →
+                </a>
+
+                <a
+                    href="#leistungen"
+                    class="button button-light"
+                >
+                    Leistungen ansehen
+                </a>
+
+            </div>
+
+
+            <div class="hero-stats">
+
+                <div class="stat">
+
+                    <strong>100%</strong>
+
+                    <span>
+                        Online buchbar
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong>24/7</strong>
+
+                    <span>
+                        Termin auswählen
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong>Einfach</strong>
+
+                    <span>
+                        Ohne Registrierung
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- KALENDER -->
+
+        <div class="calendar-card">
+
+            <div class="calendar-top">
+
+                <div>
+
+                    <small>
+                        NÄCHSTER TERMIN
+                    </small>
+
+                    <h3>
+                        Jetzt buchen
+                    </h3>
+
+                </div>
+
+                <div class="calendar-symbol">
+                    📅
+                </div>
+
+            </div>
+
+
+            <div class="month">
+
+                <button>
+                    ‹
+                </button>
+
+                <strong>
+                    August 2026
+                </strong>
+
+                <button>
+                    ›
+                </button>
+
+            </div>
+
+
+            <div class="weekdays">
+
+                <div>Mo</div>
+                <div>Di</div>
+                <div>Mi</div>
+                <div>Do</div>
+                <div>Fr</div>
+                <div>Sa</div>
+                <div>So</div>
+
+            </div>
+
+
+            <div class="days">
+
+                <div class="muted">27</div>
+                <div class="muted">28</div>
+                <div class="muted">29</div>
+                <div class="muted">30</div>
+                <div class="muted">31</div>
+                <div>1</div>
+                <div>2</div>
+
+                <div>3</div>
+                <div>4</div>
+                <div>5</div>
+                <div>6</div>
+                <div>7</div>
+                <div>8</div>
+                <div>9</div>
+
+                <div>10</div>
+                <div>11</div>
+                <div>12</div>
+                <div>13</div>
+                <div>14</div>
+                <div>15</div>
+                <div>16</div>
+
+                <div>17</div>
+                <div>18</div>
+                <div>19</div>
+                <div>20</div>
+                <div>21</div>
+                <div>22</div>
+                <div>23</div>
+
+                <div>24</div>
+                <div>25</div>
+                <div>26</div>
+                <div>27</div>
+                <div>28</div>
+                <div>29</div>
+                <div class="selected-day">
+                    30
+                </div>
+
+            </div>
+
+
+            <a
+                href="#buchung"
+                class="calendar-button"
+            >
+                Termin auswählen →
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     LEISTUNGEN
+=========================================== -->
+
+<section class="section" id="leistungen">
+
+    <div class="container">
+
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    LEISTUNGEN
+                </span>
+
+                <h2>
+
+                    Was möchtest du
+                    <span>buchen?</span>
+
+                </h2>
+
+            </div>
+
+
+            <p>
+
+                Wähle die passende Leistung und
+                anschließend deinen Wunschtermin.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="services">
+
+
+            <article class="service">
+
+                <div class="service-number">
+                    01
+                </div>
+
+                <h3>
+                    Beratung
+                </h3>
+
+                <p>
+
+                    Persönliche Beratung mit ausreichend
+                    Zeit für deine Fragen und Wünsche.
+
+                </p>
+
+                <div class="service-bottom">
+
+                    <span>
+                        60 Minuten
+                    </span>
+
+                    <strong>
+                        ab 49 €
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+
+            <article class="service featured">
+
+                <div class="service-number">
+                    02
+                </div>
+
+                <h3>
+                    Premium Termin
+                </h3>
+
+                <p>
+
+                    Unser beliebtester Termin mit
+                    persönlicher Betreuung und
+                    individueller Planung.
+
+                </p>
+
+                <div class="service-bottom">
+
+                    <span>
+                        90 Minuten
+                    </span>
+
+                    <strong>
+                        ab 79 €
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+
+            <article class="service">
+
+                <div class="service-number">
+                    03
+                </div>
+
+                <h3>
+                    Folgetermin
+                </h3>
+
+                <p>
+
+                    Für bestehende Kunden, die einen
+                    weiteren Termin vereinbaren möchten.
+
+                </p>
+
+                <div class="service-bottom">
+
+                    <span>
+                        30 Minuten
+                    </span>
+
+                    <strong>
+                        ab 29 €
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     ÜBER UNS
+=========================================== -->
+
+<section class="about" id="ueber-uns">
+
+    <div class="container about-grid">
+
+        <div class="about-number">
+            01
+        </div>
+
+
+        <div>
+
+            <span class="eyebrow">
+                ÜBER UNS
+            </span>
+
+            <h2>
+
+                Weniger Aufwand.
+                <br>
+
+                <span>Mehr Zeit für dich.</span>
+
+            </h2>
+
+
+            <p>
+
+                Wir möchten die Terminvereinbarung
+                so einfach wie möglich machen.
+
+                Keine langen Telefonate, keine unnötigen
+                Formulare und kein Warten.
+
+            </p>
+
+
+            <p>
+
+                Wähle deine Leistung, deinen Wunschtermin
+                und bestätige deine Daten. Fertig.
+
+            </p>
+
+
+            <a
+                href="#buchung"
+                class="text-link"
+            >
+                Jetzt Termin buchen →
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     BUCHUNG
+=========================================== -->
+
+<section class="booking" id="buchung">
+
+    <div class="container">
+
+
+        <div class="booking-heading">
+
+            <span class="eyebrow">
+                TERMIN BUCHEN
+            </span>
+
+            <h2>
+
+                Wähle deinen
+                <span>Wunschtermin.</span>
+
+            </h2>
+
+            <p>
+                Fülle das Formular aus und sende deine
+                Terminanfrage ab.
+            </p>
+
+        </div>
+
+
+
+        <div class="booking-grid">
+
+
+            <!-- FORMULAR -->
+
+            <form
+                class="booking-form"
+                id="bookingForm"
+            >
+
+
+                <!-- SCHRITT 1 -->
+
+                <div class="step">
+
+                    <div class="step-number">
+                        01
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Leistung auswählen
+                        </h3>
+
+
+                        <div class="form-group">
+
+                            <label for="service">
+                                Welche Leistung möchtest du buchen?
+                            </label>
+
+
+                            <select
+                                id="service"
+                                required
+                            >
+
+                                <option value="">
+                                    Bitte auswählen
+                                </option>
+
+                                <option value="Beratung">
+                                    Beratung – 60 Minuten
+                                </option>
+
+                                <option value="Premium Termin">
+                                    Premium Termin – 90 Minuten
+                                </option>
+
+                                <option value="Folgetermin">
+                                    Folgetermin – 30 Minuten
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SCHRITT 2 -->
+
+                <div class="step">
+
+                    <div class="step-number">
+                        02
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Datum & Uhrzeit
+                        </h3>
+
+
+                        <div class="form-row">
+
+
+                            <div class="form-group">
+
+                                <label for="date">
+                                    Datum
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="date"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="time">
+                                    Uhrzeit
+                                </label>
+
+                                <select
+                                    id="time"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Uhrzeit auswählen
+                                    </option>
+
+                                    <option>
+                                        09:00
+                                    </option>
+
+                                    <option>
+                                        09:30
+                                    </option>
+
+                                    <option>
+                                        10:00
+                                    </option>
+
+                                    <option>
+                                        10:30
+                                    </option>
+
+                                    <option>
+                                        11:00
+                                    </option>
+
+                                    <option>
+                                        11:30
+                                    </option>
+
+                                    <option>
+                                        13:00
+                                    </option>
+
+                                    <option>
+                                        13:30
+                                    </option>
+
+                                    <option>
+                                        14:00
+                                    </option>
+
+                                    <option>
+                                        14:30
+                                    </option>
+
+                                    <option>
+                                        15:00
+                                    </option>
+
+                                    <option>
+                                        15:30
+                                    </option>
+
+                                    <option>
+                                        16:00
+                                    </option>
+
+                                    <option>
+                                        16:30
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SCHRITT 3 -->
+
+                <div class="step">
+
+                    <div class="step-number">
+                        03
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Deine Daten
+                        </h3>
+
+
+                        <div class="form-group">
+
+                            <label for="name">
+                                Vor- und Nachname
+                            </label>
+
+                            <input
+                                type="text"
+                                id="name"
+                                placeholder="Max Mustermann"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label for="email">
+                                    E-Mail
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    placeholder="max@beispiel.de"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="phone">
+                                    Telefon
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    placeholder="+49 170 1234567"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="message">
+                                Nachricht
+                                <span>
+                                    (optional)
+                                </span>
+                            </label>
+
+                            <textarea
+                                id="message"
+                                rows="4"
+                                placeholder="Gibt es etwas, das wir wissen sollten?"
+                            ></textarea>
+
+                        </div>
+
+
+                        <label class="checkbox">
+
+                            <input
+                                type="checkbox"
+                                id="privacy"
+                                required
+                            >
+
+                            <span>
+
+                                Ich stimme der Verarbeitung
+                                meiner Daten zur
+                                Terminbearbeitung zu.
+
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+
+                <button
+                    type="submit"
+                    class="submit"
+                >
+
+                    <span>
+                        Termin verbindlich anfragen
+                    </span>
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+
+                <p class="form-note">
+
+                    Deine Daten werden ausschließlich zur
+                    Bearbeitung deiner Terminanfrage verwendet.
+
+                </p>
+
+            </form>
+
+
+
+            <!-- SIDEBAR -->
+
+            <aside class="sidebar">
+
+                <div class="sidebar-card">
+
+                    <span class="eyebrow">
+                        DEIN TERMIN
+                    </span>
+
+                    <h3>
+
+                        Einfach online
+                        <br>
+                        buchen.
+
+                    </h3>
+
+
+                    <div class="sidebar-line"></div>
+
+
+                    <div class="sidebar-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        <p>
+                            Termin online auswählen
+                        </p>
+
+                    </div>
+
+
+                    <div class="sidebar-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        <p>
+                            Keine Registrierung notwendig
+                        </p>
+
+                    </div>
+
+
+                    <div class="sidebar-item">
+
+                        <span class="check">
+                            ✓
+                        </span>
+
+                        <p>
+                            Schnelle Terminbestätigung
+                        </p>
+
+                    </div>
+
+
+                    <div class="sidebar-contact">
+
+                        <small>
+                            FRAGEN?
+                        </small>
+
+                        <strong>
+                            kontakt@deintermin.de
+                        </strong>
+
+                        <span>
+                            +49 123 456789
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     KONTAKT
+=========================================== -->
+
+<section class="contact" id="kontakt">
+
+    <div class="container contact-grid">
+
+
+        <div>
+
+            <span class="eyebrow">
+                KONTAKT
+            </span>
+
+            <h2>
+
+                Noch Fragen?
+                <br>
+
+                <span>Wir helfen dir.</span>
+
+            </h2>
+
+        </div>
+
+
+        <div class="contact-details">
+
+
+            <div>
+
+                <small>
+                    E-MAIL
+                </small>
+
+                <a href="mailto:kontakt@deintermin.de">
+                    kontakt@deintermin.de
+                </a>
+
+            </div>
+
+
+            <div>
+
+                <small>
+                    TELEFON
+                </small>
+
+                <a href="tel:+49123456789">
+                    +49 123 456789
+                </a>
+
+            </div>
+
+
+            <div>
+
+                <small>
+                    ÖFFNUNGSZEITEN
+                </small>
+
+                <p>
+                    Mo – Fr · 09:00 – 17:00 Uhr
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==========================================
+     FOOTER
+=========================================== -->
+
+<footer>
+
+    <div class="container footer-grid">
+
+
+        <a href="#home" class="logo">
+            DEIN<span>TERMIN</span>
+        </a>
+
+
+        <div class="footer-links">
+
+            <a href="#">
+                Impressum
+            </a>
+
+            <a href="#">
+                Datenschutz
+            </a>
+
+        </div>
+
+
+        <p class="copyright">
+
+            © 2026 Dein Termin.
+            Alle Rechte vorbehalten.
+
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<!-- ==========================================
+     ERFOLGS-MODAL
+=========================================== -->
+
+<div class="modal" id="successModal">
+
+    <div class="modal-box">
+
+
+        <button
+            class="close"
+            id="closeModal"
+        >
+            ×
+        </button>
+
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+
+        <span class="eyebrow">
+            ERFOLGREICH
+        </span>
+
+
+        <h2>
+            Termin angefragt!
+        </h2>
+
+
+        <p id="successText">
+
+            Vielen Dank.
+            Deine Terminanfrage wurde erfolgreich gespeichert.
+
+        </p>
+
+
+        <button
+            class="button button-dark modal-button"
+            id="okayButton"
+        >
+
+            Alles klar
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    /* =====================================
+       MOBILE MENÜ
+    ===================================== */
+
+    const menuButton =
+        document.getElementById("menuButton");
+
+    const navLinks =
+        document.getElementById("navLinks");
+
+
+    menuButton.addEventListener(
+        "click",
+        function() {
+
+            navLinks.classList.toggle("active");
+
+        }
+    );
+
+
+    document
+        .querySelectorAll(".nav-links a")
+        .forEach(function(link) {
+
+            link.addEventListener(
+                "click",
+                function() {
+
+                    navLinks.classList.remove("active");
+
+                }
+            );
+
+        });
+
+
+
+    /* =====================================
+       DATUM
+    ===================================== */
+
+    const dateInput =
+        document.getElementById("date");
+
+
+    const now = new Date();
+
+
+    const today =
+        now.getFullYear() +
+        "-" +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(now.getDate()).padStart(2, "0");
+
+
+    dateInput.min = today;
+
+
+
+    /* =====================================
+       FORMULAR
+    ===================================== */
+
+    const form =
+        document.getElementById("bookingForm");
+
+
+    const modal =
+        document.getElementById("successModal");
+
+
+    const closeModal =
+        document.getElementById("closeModal");
+
+
+    const okayButton =
+        document.getElementById("okayButton");
+
+
+    const successText =
+        document.getElementById("successText");
+
+
+
+    form.addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            const service =
+                document.getElementById("service").value;
+
+
+            const date =
+                document.getElementById("date").value;
+
+
+            const time =
+                document.getElementById("time").value;
+
+
+            const name =
+                document.getElementById("name").value;
+
+
+            const email =
+                document.getElementById("email").value;
+
+
+            const phone =
+                document.getElementById("phone").value;
+
+
+            const message =
+                document.getElementById("message").value;
+
+
+
+            if (!service ||
+                !date ||
+                !time ||
+                !name ||
+                !email ||
+                !phone) {
+
+                alert(
+                    "Bitte fülle alle Pflichtfelder aus."
+                );
+
+                return;
+
+            }
+
+
+
+            /* Datum prüfen */
+
+            const selectedDate =
+                new Date(date + "T00:00:00");
+
+
+            const currentDate =
+                new Date(today + "T00:00:00");
+
+
+            if (selectedDate < currentDate) {
+
+                alert(
+                    "Bitte wähle ein Datum in der Zukunft."
+                );
+
+                return;
+
+            }
+
+
+
+            /* Wochenende prüfen */
+
+            const weekday =
+                selectedDate.getDay();
+
+
+            if (
+                weekday === 0 ||
+                weekday === 6
+            ) {
+
+                alert(
+                    "Termine sind momentan nur Montag bis Freitag möglich."
+                );
+
+                return;
+
+            }
+
+
+
+            /* =================================
+               BUCHUNG SPEICHERN
+            ================================= */
+
+            const bookings =
+                JSON.parse(
+                    localStorage.getItem(
+                        "deinTerminBookings"
+                    ) || "[]"
+                );
+
+
+            /* Prüfen, ob Zeit bereits gebucht ist */
+
+            const alreadyBooked =
+                bookings.some(function(booking) {
+
+                    return (
+                        booking.date === date &&
+                        booking.time === time
+                    );
+
+                });
+
+
+            if (alreadyBooked) {
+
+                alert(
+                    "Dieser Termin ist bereits vergeben. Bitte wähle eine andere Uhrzeit."
+                );
+
+                return;
+
+            }
+
+
+
+            const booking = {
+
+                id: Date.now(),
+
+                service: service,
+
+                date: date,
+
+                time: time,
+
+                name: name,
+
+                email: email,
+
+                phone: phone,
+
+                message: message,
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
+
+
+            bookings.push(booking);
+
+
+            localStorage.setItem(
+                "deinTerminBookings",
+                JSON.stringify(bookings)
+            );
+
+
+
+            /* Datum formatieren */
+
+            const formattedDate =
+                selectedDate.toLocaleDateString(
+                    "de-DE",
+                    {
+                        weekday: "long",
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric"
+                    }
+                );
+
+
+
+            /* Erfolgsmeldung */
+
+            successText.innerHTML =
+
+                "Vielen Dank, " +
+                escapeHTML(name) +
+                ".<br><br>" +
+
+                "Dein gewünschter Termin für " +
+
+                "<strong>" +
+                escapeHTML(service) +
+                "</strong>" +
+
+                " ist am " +
+
+                "<strong>" +
+                formattedDate +
+                "</strong>" +
+
+                " um " +
+
+                "<strong>" +
+                escapeHTML(time) +
+                " Uhr</strong>." +
+
+                "<br><br>" +
+
+                "Wir melden uns unter " +
+
+                "<strong>" +
+                escapeHTML(email) +
+                "</strong>.";
+
+
+
+            modal.classList.add("active");
+
+
+            form.reset();
+
+
+            dateInput.min = today;
+
+        }
+    );
+
+
+
+    /* =====================================
+       MODAL SCHLIESSEN
+    ===================================== */
+
+    function closeSuccessModal() {
+
+        modal.classList.remove("active");
+
+    }
+
+
+    closeModal.addEventListener(
+        "click",
+        closeSuccessModal
+    );
+
+
+    okayButton.addEventListener(
+        "click",
+        closeSuccessModal
+    );
+
+
+    modal.addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === modal
+            ) {
+
+                closeSuccessModal();
+
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Escape" &&
+                modal.classList.contains("active")
+            ) {
+
+                closeSuccessModal();
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================
+       SICHERHEIT
+    ===================================== */
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+</script>
+
+
+</body>
+</html>
+```
