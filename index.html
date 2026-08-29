@@ -1,0 +1,1291 @@
+```html
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09090d">
+
+  <title>TerminPlan</title>
+
+  <style>
+
+    :root {
+      --bg: #09090d;
+      --surface: #111119;
+      --surface-2: #181822;
+      --border: rgba(255,255,255,.09);
+      --text: #f7f7fb;
+      --muted: #9999aa;
+      --accent: #7657ff;
+      --accent-2: #4d8dff;
+      --green: #31d88a;
+      --red: #ff5d6c;
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      color: var(--text);
+
+      background:
+        radial-gradient(
+          circle at 15% 0%,
+          rgba(118,87,255,.15),
+          transparent 32rem
+        ),
+        radial-gradient(
+          circle at 90% 20%,
+          rgba(77,141,255,.10),
+          transparent 28rem
+        ),
+        var(--bg);
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(850px, calc(100% - 24px));
+      margin: auto;
+      padding: 30px 0 60px;
+    }
+
+
+    /* HEADER */
+
+    header {
+      padding: 25px 5px 35px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      font-size: clamp(2rem, 7vw, 3.1rem);
+      font-weight: 800;
+
+      letter-spacing: -2px;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+
+      width: 50px;
+      height: 50px;
+
+      border-radius: 15px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--accent),
+          var(--accent-2)
+        );
+
+      font-size: 25px;
+
+      box-shadow:
+        0 12px 35px
+        rgba(118,87,255,.3);
+    }
+
+    header p {
+      margin: 9px 0 0 62px;
+
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+
+    /* CARD */
+
+    .card {
+      background: rgba(17,17,25,.92);
+
+      border: 1px solid var(--border);
+
+      border-radius: var(--radius);
+
+      box-shadow:
+        0 24px 70px rgba(0,0,0,.32);
+
+      backdrop-filter: blur(18px);
+    }
+
+
+    /* BOOKING */
+
+    .booking-card {
+      padding: clamp(20px, 5vw, 34px);
+    }
+
+    .section-title {
+      margin: 0 0 25px;
+
+      font-size: 1.45rem;
+
+      letter-spacing: -.5px;
+    }
+
+
+    /* FIELDS */
+
+    .field {
+      margin-bottom: 24px;
+    }
+
+    .label {
+      display: block;
+
+      margin-bottom: 10px;
+
+      font-weight: 700;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+
+      min-height: 52px;
+
+      padding: 14px 15px;
+
+      color: var(--text);
+
+      background: var(--surface-2);
+
+      border: 1px solid var(--border);
+
+      border-radius: 14px;
+
+      outline: none;
+
+      transition: .2s;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: rgba(118,87,255,.7);
+
+      box-shadow:
+        0 0 0 4px
+        rgba(118,87,255,.10);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    input[type="date"] {
+      color-scheme: dark;
+    }
+
+
+    /* UHRZEIT */
+
+    .time-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 9px;
+    }
+
+    .time-button {
+      min-height: 55px;
+
+      border: 1px solid var(--border);
+
+      border-radius: 14px;
+
+      color: #d9d9e2;
+
+      background: var(--surface-2);
+
+      transition: .2s;
+    }
+
+    .time-button:hover {
+      transform: translateY(-2px);
+
+      border-color:
+        rgba(118,87,255,.5);
+    }
+
+    .time-button.selected {
+      color: white;
+
+      border-color: transparent;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--accent),
+          var(--accent-2)
+        );
+
+      box-shadow:
+        0 9px 25px
+        rgba(118,87,255,.22);
+    }
+
+
+    /* BUTTON */
+
+    .book-button {
+      width: 100%;
+
+      min-height: 57px;
+
+      border: 0;
+
+      border-radius: 15px;
+
+      color: white;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--accent),
+          var(--accent-2)
+        );
+
+      font-weight: 800;
+
+      font-size: 1rem;
+
+      transition: .2s;
+    }
+
+    .book-button:hover {
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 15px 35px
+        rgba(118,87,255,.25);
+    }
+
+
+    /* MESSAGE */
+
+    .message {
+      display: none;
+
+      margin-top: 15px;
+
+      padding: 14px;
+
+      border-radius: 13px;
+
+      line-height: 1.5;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      color: #ffd6da;
+
+      background:
+        rgba(255,93,108,.09);
+
+      border:
+        1px solid
+        rgba(255,93,108,.25);
+    }
+
+    .message.success {
+      color: #d5ffe9;
+
+      background:
+        rgba(49,216,138,.09);
+
+      border:
+        1px solid
+        rgba(49,216,138,.25);
+    }
+
+
+    /* TERMINE */
+
+    .appointments {
+      margin-top: 25px;
+
+      padding:
+        clamp(20px, 5vw, 30px);
+    }
+
+    .appointment-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .appointment {
+      display: grid;
+
+      grid-template-columns:
+        1fr auto;
+
+      gap: 15px;
+
+      align-items: center;
+
+      padding: 17px;
+
+      border:
+        1px solid
+        var(--border);
+
+      border-radius: 16px;
+
+      background:
+        rgba(255,255,255,.025);
+    }
+
+    .appointment-name {
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .appointment-info {
+      margin-top: 6px;
+
+      color: var(--muted);
+
+      font-size: .9rem;
+    }
+
+    .appointment-reason {
+      margin-top: 5px;
+
+      color: #c5c5d0;
+
+      font-size: .9rem;
+    }
+
+    .appointment-time {
+      padding: 9px 12px;
+
+      border-radius: 10px;
+
+      color: #ddd8ff;
+
+      background:
+        rgba(118,87,255,.12);
+
+      font-weight: 700;
+
+      white-space: nowrap;
+    }
+
+    .delete-button {
+      margin-top: 10px;
+
+      padding: 7px 10px;
+
+      border:
+        1px solid
+        rgba(255,93,108,.2);
+
+      border-radius: 9px;
+
+      color: #ff9ca5;
+
+      background:
+        rgba(255,93,108,.07);
+
+      font-size: .78rem;
+    }
+
+    .empty {
+      padding: 25px;
+
+      text-align: center;
+
+      color: var(--muted);
+
+      border:
+        1px dashed
+        var(--border);
+
+      border-radius: 15px;
+    }
+
+
+    /* MOBILE */
+
+    @media (max-width: 600px) {
+
+      .page {
+        width: calc(100% - 18px);
+        padding-top: 10px;
+      }
+
+      header {
+        padding: 20px 4px 25px;
+      }
+
+      .brand {
+        font-size: 2.2rem;
+      }
+
+      .brand-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 21px;
+      }
+
+      header p {
+        margin-left: 56px;
+      }
+
+      .time-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .appointment {
+        grid-template-columns: 1fr;
+      }
+
+      .appointment-time {
+        width: fit-content;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+<main class="page">
+
+
+  <!-- HEADER -->
+
+  <header>
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        📅
+      </div>
+
+      <span>
+        TerminPlan
+      </span>
+
+    </div>
+
+    <p>
+      Deine Termine einfach im Blick.
+    </p>
+
+  </header>
+
+
+
+  <!-- TERMIN BUCHEN -->
+
+  <section class="card booking-card">
+
+    <h1 class="section-title">
+      Termin buchen
+    </h1>
+
+
+    <!-- DATUM -->
+
+    <div class="field">
+
+      <label class="label">
+        📅 Datum
+      </label>
+
+      <input
+        type="date"
+        id="date"
+      >
+
+    </div>
+
+
+    <!-- UHRZEIT -->
+
+    <div class="field">
+
+      <label class="label">
+        🕐 Uhrzeit
+      </label>
+
+      <div
+        class="time-grid"
+        id="timeGrid"
+      ></div>
+
+    </div>
+
+
+    <!-- NAME -->
+
+    <div class="field">
+
+      <label
+        class="label"
+        for="name"
+      >
+        👤 Name
+      </label>
+
+      <input
+        type="text"
+        id="name"
+        maxlength="60"
+        placeholder="Name"
+      >
+
+    </div>
+
+
+    <!-- GRUND -->
+
+    <div class="field">
+
+      <label
+        class="label"
+        for="reason"
+      >
+        📝 Grund
+      </label>
+
+      <textarea
+        id="reason"
+        maxlength="300"
+        placeholder="Worum geht es?"
+      ></textarea>
+
+    </div>
+
+
+    <!-- BUCHEN -->
+
+    <button
+      class="book-button"
+      id="bookButton"
+    >
+      Termin speichern
+    </button>
+
+
+    <div
+      class="message"
+      id="message"
+    ></div>
+
+  </section>
+
+
+
+  <!-- MEINE TERMINE -->
+
+  <section class="card appointments">
+
+    <h2 class="section-title">
+      Meine Termine
+    </h2>
+
+    <div
+      class="appointment-list"
+      id="appointmentList"
+    ></div>
+
+  </section>
+
+
+</main>
+
+
+
+<script>
+
+
+  /* =====================================
+     EINSTELLUNGEN
+  ===================================== */
+
+  const START_TIME = 16 * 60;
+
+  const END_TIME = 24 * 60;
+
+  const INTERVAL = 30;
+
+
+  /* =====================================
+     ELEMENTE
+  ===================================== */
+
+  const dateInput =
+    document.getElementById("date");
+
+  const timeGrid =
+    document.getElementById("timeGrid");
+
+  const nameInput =
+    document.getElementById("name");
+
+  const reasonInput =
+    document.getElementById("reason");
+
+  const bookButton =
+    document.getElementById("bookButton");
+
+  const message =
+    document.getElementById("message");
+
+  const appointmentList =
+    document.getElementById("appointmentList");
+
+
+  let selectedTime = null;
+
+
+  /* =====================================
+     DATUM
+  ===================================== */
+
+  function pad(number) {
+
+    return String(number).padStart(2, "0");
+
+  }
+
+
+  function today() {
+
+    const date = new Date();
+
+    return (
+      date.getFullYear()
+      + "-"
+      + pad(date.getMonth() + 1)
+      + "-"
+      + pad(date.getDate())
+    );
+
+  }
+
+
+  dateInput.min = today();
+
+  dateInput.value = today();
+
+
+  /* =====================================
+     UHRZEIT
+  ===================================== */
+
+  function timeString(minutes) {
+
+    if (minutes === 1440) {
+      return "24:00";
+    }
+
+    return (
+      pad(Math.floor(minutes / 60))
+      + ":"
+      + pad(minutes % 60)
+    );
+
+  }
+
+
+  function createTimes() {
+
+    timeGrid.innerHTML = "";
+
+    for (
+      let minutes = START_TIME;
+      minutes < END_TIME;
+      minutes += INTERVAL
+    ) {
+
+      const button =
+        document.createElement("button");
+
+      button.type = "button";
+
+      button.className =
+        "time-button";
+
+      button.textContent =
+        timeString(minutes);
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          document
+            .querySelectorAll(".time-button")
+            .forEach(item => {
+
+              item.classList.remove(
+                "selected"
+              );
+
+            });
+
+
+          button.classList.add(
+            "selected"
+          );
+
+
+          selectedTime = minutes;
+
+          hideMessage();
+
+        }
+      );
+
+
+      timeGrid.appendChild(button);
+
+    }
+
+  }
+
+
+  createTimes();
+
+
+  /* =====================================
+     TERMINE AUS LOCALSTORAGE
+  ===================================== */
+
+  function getAppointments() {
+
+    return JSON.parse(
+      localStorage.getItem(
+        "termine"
+      ) || "[]"
+    );
+
+  }
+
+
+  function saveAppointments(
+    appointments
+  ) {
+
+    localStorage.setItem(
+      "termine",
+      JSON.stringify(
+        appointments
+      )
+    );
+
+  }
+
+
+  /* =====================================
+     NACHRICHTEN
+  ===================================== */
+
+  function showMessage(
+    text,
+    type
+  ) {
+
+    message.className =
+      "message show " + type;
+
+    message.innerHTML = text;
+
+  }
+
+
+  function hideMessage() {
+
+    message.className =
+      "message";
+
+    message.innerHTML = "";
+
+  }
+
+
+  /* =====================================
+     TERMIN SPEICHERN
+  ===================================== */
+
+  bookButton.addEventListener(
+    "click",
+    () => {
+
+      hideMessage();
+
+
+      const date =
+        dateInput.value;
+
+      const name =
+        nameInput.value.trim();
+
+      const reason =
+        reasonInput.value.trim();
+
+
+      if (!date) {
+
+        showMessage(
+          "Bitte wähle ein Datum.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (!selectedTime) {
+
+        showMessage(
+          "Bitte wähle eine Uhrzeit.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (!name) {
+
+        showMessage(
+          "Bitte gib deinen Namen ein.",
+          "error"
+        );
+
+        nameInput.focus();
+
+        return;
+
+      }
+
+
+      if (!reason) {
+
+        showMessage(
+          "Bitte gib einen Grund für den Termin ein.",
+          "error"
+        );
+
+        reasonInput.focus();
+
+        return;
+
+      }
+
+
+      const appointments =
+        getAppointments();
+
+
+      /* Prüfen, ob Zeit schon vergeben */
+
+      const alreadyExists =
+        appointments.some(
+          appointment =>
+            appointment.date === date &&
+            appointment.time === selectedTime
+        );
+
+
+      if (alreadyExists) {
+
+        showMessage(
+          "Für diese Uhrzeit hast du bereits einen Termin.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      /* Termin erstellen */
+
+      const appointment = {
+
+        id:
+          Date.now(),
+
+        date:
+          date,
+
+        time:
+          selectedTime,
+
+        name:
+          name,
+
+        reason:
+          reason
+
+      };
+
+
+      appointments.push(
+        appointment
+      );
+
+
+      saveAppointments(
+        appointments
+      );
+
+
+      /* Eingaben leeren */
+
+      nameInput.value = "";
+
+      reasonInput.value = "";
+
+      selectedTime = null;
+
+
+      document
+        .querySelectorAll(
+          ".time-button"
+        )
+        .forEach(button => {
+
+          button.classList.remove(
+            "selected"
+          );
+
+        });
+
+
+      showMessage(
+        "✓ Termin wurde gespeichert.",
+        "success"
+      );
+
+
+      showAppointments();
+
+    }
+  );
+
+
+  /* =====================================
+     TERMINE ANZEIGEN
+  ===================================== */
+
+  function showAppointments() {
+
+    let appointments =
+      getAppointments();
+
+
+    /* Alte Termine entfernen */
+
+    const todayDate =
+      today();
+
+
+    appointments =
+      appointments.filter(
+        appointment =>
+          appointment.date >= todayDate
+      );
+
+
+    saveAppointments(
+      appointments
+    );
+
+
+    appointmentList.innerHTML = "";
+
+
+    if (
+      appointments.length === 0
+    ) {
+
+      appointmentList.innerHTML =
+        `
+          <div class="empty">
+            Noch keine Termine vorhanden.
+          </div>
+        `;
+
+      return;
+
+    }
+
+
+    /* Sortieren */
+
+    appointments.sort(
+      (a, b) => {
+
+        if (
+          a.date !== b.date
+        ) {
+
+          return a.date.localeCompare(
+            b.date
+          );
+
+        }
+
+        return (
+          a.time -
+          b.time
+        );
+
+      }
+    );
+
+
+    appointments.forEach(
+      appointment => {
+
+        const item =
+          document.createElement(
+            "div"
+          );
+
+        item.className =
+          "appointment";
+
+
+        const formattedDate =
+          formatDate(
+            appointment.date
+          );
+
+
+        const formattedTime =
+          timeString(
+            appointment.time
+          );
+
+
+        item.innerHTML = `
+
+          <div>
+
+            <div class="appointment-name">
+
+              ${escapeHTML(
+                appointment.name
+              )}
+
+            </div>
+
+            <div class="appointment-info">
+
+              📅 ${formattedDate}
+
+            </div>
+
+            <div class="appointment-reason">
+
+              ${escapeHTML(
+                appointment.reason
+              )}
+
+            </div>
+
+            <button
+              class="delete-button"
+              data-id="${appointment.id}"
+            >
+              Termin löschen
+            </button>
+
+          </div>
+
+
+          <div class="appointment-time">
+
+            ${formattedTime} Uhr
+
+          </div>
+
+        `;
+
+
+        item
+          .querySelector(
+            ".delete-button"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              deleteAppointment(
+                appointment.id
+              );
+
+            }
+          );
+
+
+        appointmentList.appendChild(
+          item
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =====================================
+     DATUM FORMATIEREN
+  ===================================== */
+
+  function formatDate(
+    date
+  ) {
+
+    const parts =
+      date.split("-");
+
+
+    return (
+      parts[2]
+      + "."
+      + parts[1]
+      + "."
+      + parts[0]
+    );
+
+  }
+
+
+  /* =====================================
+     TERMIN LÖSCHEN
+  ===================================== */
+
+  function deleteAppointment(
+    id
+  ) {
+
+    const confirmed =
+      confirm(
+        "Diesen Termin wirklich löschen?"
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    let appointments =
+      getAppointments();
+
+
+    appointments =
+      appointments.filter(
+        appointment =>
+          appointment.id !== id
+      );
+
+
+    saveAppointments(
+      appointments
+    );
+
+
+    showAppointments();
+
+  }
+
+
+  /* =====================================
+     SICHERHEIT
+  ===================================== */
+
+  function escapeHTML(
+    value
+  ) {
+
+    return String(value)
+
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+
+  }
+
+
+  /* =====================================
+     START
+  ===================================== */
+
+  showAppointments();
+
+
+</script>
+
+</body>
+</html>
+```
