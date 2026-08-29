@@ -1,0 +1,888 @@
+```html
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Termin buchen</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #111;
+        }
+
+        /* STARTSEITE */
+
+        .start {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+        }
+
+        .start-box {
+            width: 100%;
+            max-width: 700px;
+
+            text-align: center;
+        }
+
+        .start-box h1 {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .start-box p {
+            color: #777;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .termin-button {
+            width: 100%;
+            min-height: 220px;
+
+            border: none;
+            border-radius: 25px;
+
+            background: #111;
+            color: white;
+
+            font-size: 32px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .termin-button:hover {
+            background: #222;
+            transform: scale(1.01);
+        }
+
+
+        /* BUCHUNG */
+
+        .booking {
+            display: none;
+
+            min-height: 100vh;
+
+            padding: 30px 20px;
+        }
+
+        .booking.active {
+            display: block;
+        }
+
+        .booking-box {
+            width: 100%;
+            max-width: 600px;
+
+            margin: 60px auto;
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 20px;
+        }
+
+        .back {
+            border: none;
+            background: none;
+
+            color: #777;
+
+            font-size: 15px;
+
+            cursor: pointer;
+
+            margin-bottom: 30px;
+        }
+
+        .booking-box h2 {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .booking-box > p {
+            color: #777;
+            margin-bottom: 35px;
+        }
+
+
+        /* FELDER */
+
+        label {
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+        .field {
+            margin-bottom: 25px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+
+            padding: 15px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 10px;
+
+            background: #fafafa;
+
+            font-size: 16px;
+
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #111;
+            background: white;
+        }
+
+        textarea {
+            min-height: 120px;
+
+            resize: vertical;
+        }
+
+
+        /* UHRZEITEN */
+
+        .times {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 10px;
+        }
+
+        .time {
+            padding: 14px 5px;
+
+            border: 1px solid #ddd;
+
+            background: white;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+        }
+
+        .time:hover {
+            border-color: #111;
+        }
+
+        .time.selected {
+            background: #111;
+            color: white;
+            border-color: #111;
+        }
+
+
+        /* BUCHEN */
+
+        .submit {
+            width: 100%;
+
+            padding: 17px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #111;
+            color: white;
+
+            font-size: 17px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 5px;
+        }
+
+        .submit:hover {
+            background: #222;
+        }
+
+
+        /* ERFOLG */
+
+        .success {
+            display: none;
+
+            min-height: 100vh;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+        }
+
+        .success.active {
+            display: flex;
+        }
+
+        .success-box {
+            width: 100%;
+            max-width: 500px;
+
+            background: white;
+
+            padding: 50px 30px;
+
+            border-radius: 20px;
+
+            text-align: center;
+        }
+
+        .check {
+            width: 65px;
+            height: 65px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 25px;
+
+            background: #111;
+            color: white;
+
+            border-radius: 50%;
+
+            font-size: 30px;
+        }
+
+        .success-box h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .success-box p {
+            color: #777;
+            line-height: 1.6;
+        }
+
+
+        /* HANDY */
+
+        @media (max-width: 600px) {
+
+            .start-box h1 {
+                font-size: 40px;
+            }
+
+            .start-box p {
+                font-size: 16px;
+            }
+
+            .termin-button {
+                min-height: 180px;
+                font-size: 26px;
+            }
+
+            .booking-box {
+                margin: 20px auto;
+                padding: 25px 20px;
+            }
+
+            .booking-box h2 {
+                font-size: 30px;
+            }
+
+            .times {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================================
+     START
+================================ -->
+
+<div class="start" id="start">
+
+    <div class="start-box">
+
+        <h1>
+            Willkommen
+        </h1>
+
+        <p>
+            Buche hier ganz einfach deinen Termin.
+        </p>
+
+        <button
+            class="termin-button"
+            onclick="openBooking()"
+        >
+
+            Termin buchen
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================================
+     BUCHUNG
+================================ -->
+
+<div class="booking" id="booking">
+
+    <div class="booking-box">
+
+
+        <button
+            class="back"
+            onclick="goBack()"
+        >
+
+            ← Zurück
+
+        </button>
+
+
+        <h2>
+            Termin buchen
+        </h2>
+
+        <p>
+            Wähle eine Uhrzeit und gib deine Daten ein.
+        </p>
+
+
+        <!-- DATUM -->
+
+        <div class="field">
+
+            <label>
+                Datum
+            </label>
+
+            <input
+                type="date"
+                id="date"
+                required
+            >
+
+        </div>
+
+
+        <!-- UHRZEIT -->
+
+        <div class="field">
+
+            <label>
+                Uhrzeit
+            </label>
+
+
+            <div class="times">
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    09:00
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    09:30
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    10:00
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    10:30
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    11:00
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    11:30
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    13:00
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    13:30
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    14:00
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    14:30
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    15:00
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    15:30
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    16:00
+                </button>
+
+                <button
+                    class="time"
+                    onclick="selectTime(this)"
+                >
+                    16:30
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAME -->
+
+        <div class="field">
+
+            <label>
+                Name
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                placeholder="Dein Name"
+            >
+
+        </div>
+
+
+        <!-- GRUND -->
+
+        <div class="field">
+
+            <label>
+                Grund des Termins
+            </label>
+
+            <textarea
+                id="reason"
+                placeholder="Worum geht es?"
+            ></textarea>
+
+        </div>
+
+
+        <!-- BUTTON -->
+
+        <button
+            class="submit"
+            onclick="bookAppointment()"
+        >
+
+            Termin buchen
+
+        </button>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- ================================
+     ERFOLG
+================================ -->
+
+<div class="success" id="success">
+
+    <div class="success-box">
+
+        <div class="check">
+            ✓
+        </div>
+
+        <h2>
+            Termin gebucht
+        </h2>
+
+        <p id="successText">
+            Dein Termin wurde erfolgreich gebucht.
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+/* ================================
+   BUCHUNG ÖFFNEN
+================================ */
+
+function openBooking() {
+
+    document.getElementById("start").style.display = "none";
+
+    document
+        .getElementById("booking")
+        .classList.add("active");
+
+}
+
+
+/* ================================
+   ZURÜCK
+================================ */
+
+function goBack() {
+
+    document
+        .getElementById("booking")
+        .classList.remove("active");
+
+    document.getElementById("start").style.display = "flex";
+
+}
+
+
+/* ================================
+   UHRZEIT AUSWÄHLEN
+================================ */
+
+let selectedTime = "";
+
+
+function selectTime(button) {
+
+    document
+        .querySelectorAll(".time")
+        .forEach(function(item) {
+
+            item.classList.remove("selected");
+
+        });
+
+
+    button.classList.add("selected");
+
+
+    selectedTime =
+        button.textContent.trim();
+
+}
+
+
+/* ================================
+   MINDEST-DATUM
+================================ */
+
+const dateInput =
+    document.getElementById("date");
+
+
+const today =
+    new Date();
+
+
+const year =
+    today.getFullYear();
+
+
+const month =
+    String(
+        today.getMonth() + 1
+    ).padStart(2, "0");
+
+
+const day =
+    String(
+        today.getDate()
+    ).padStart(2, "0");
+
+
+dateInput.min =
+    year + "-" +
+    month + "-" +
+    day;
+
+
+
+/* ================================
+   TERMIN BUCHEN
+================================ */
+
+function bookAppointment() {
+
+    const date =
+        document.getElementById("date").value;
+
+    const name =
+        document.getElementById("name").value.trim();
+
+    const reason =
+        document.getElementById("reason").value.trim();
+
+
+    if (!date) {
+
+        alert(
+            "Bitte wähle ein Datum aus."
+        );
+
+        return;
+
+    }
+
+
+    if (!selectedTime) {
+
+        alert(
+            "Bitte wähle eine Uhrzeit aus."
+        );
+
+        return;
+
+    }
+
+
+    if (!name) {
+
+        alert(
+            "Bitte gib deinen Namen ein."
+        );
+
+        return;
+
+    }
+
+
+    if (!reason) {
+
+        alert(
+            "Bitte gib einen Grund für den Termin ein."
+        );
+
+        return;
+
+    }
+
+
+    /* Wochenende verhindern */
+
+    const selectedDate =
+        new Date(date + "T00:00:00");
+
+
+    const weekday =
+        selectedDate.getDay();
+
+
+    if (
+        weekday === 0 ||
+        weekday === 6
+    ) {
+
+        alert(
+            "Bitte wähle einen Wochentag."
+        );
+
+        return;
+
+    }
+
+
+    /* Termin speichern */
+
+    const appointments =
+        JSON.parse(
+            localStorage.getItem(
+                "appointments"
+            ) || "[]"
+        );
+
+
+    appointments.push({
+
+        date: date,
+
+        time: selectedTime,
+
+        name: name,
+
+        reason: reason,
+
+        created:
+            new Date().toISOString()
+
+    });
+
+
+    localStorage.setItem(
+        "appointments",
+        JSON.stringify(
+            appointments
+        )
+    );
+
+
+    /* Datum anzeigen */
+
+    const formattedDate =
+        selectedDate.toLocaleDateString(
+            "de-DE",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
+
+
+    document.getElementById(
+        "successText"
+    ).innerHTML =
+
+        "Danke " +
+        escapeHTML(name) +
+        "!<br><br>" +
+
+        "Dein Termin ist am " +
+
+        "<strong>" +
+        formattedDate +
+        "</strong>" +
+
+        " um " +
+
+        "<strong>" +
+        escapeHTML(selectedTime) +
+        " Uhr</strong>.";
+
+    
+    document
+        .getElementById("booking")
+        .classList.remove("active");
+
+
+    document
+        .getElementById("success")
+        .classList.add("active");
+
+}
+
+
+/* ================================
+   SICHERHEIT
+================================ */
+
+function escapeHTML(text) {
+
+    return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+</script>
+
+
+</body>
+
+</html>
+```
