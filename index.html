@@ -1,0 +1,3370 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b12">
+  <title>TerminPlan</title>
+
+  <style>
+    :root {
+      --bg: #090b12;
+      --card: #11141d;
+      --card-2: #161a25;
+      --border: rgba(255,255,255,.08);
+      --text: #f5f7fb;
+      --muted: #8e96a8;
+      --primary: #755cff;
+      --primary-2: #4e8cff;
+      --green: #32d69d;
+      --red: #ff5d6c;
+      --blue: #5f8fff;
+      --shadow: 0 25px 70px rgba(0,0,0,.35);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(117,92,255,.17), transparent 32rem),
+        radial-gradient(circle at 90% 5%, rgba(78,140,255,.12), transparent 30rem),
+        var(--bg);
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      height: 72px;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      background: rgba(9,11,18,.78);
+      backdrop-filter: blur(18px);
+    }
+
+    .header-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.18rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      box-shadow: 0 10px 30px rgba(117,92,255,.3);
+    }
+
+    .admin-button {
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 9px 13px;
+      color: var(--muted);
+      background: rgba(255,255,255,.035);
+      transition: .2s ease;
+    }
+
+    .admin-button:hover {
+      color: var(--text);
+      border-color: rgba(117,92,255,.45);
+    }
+
+    main {
+      padding: 65px 0 80px;
+    }
+
+    .hero {
+      margin-bottom: 38px;
+      animation: fadeUp .6s ease both;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      line-height: .95;
+      letter-spacing: -.065em;
+    }
+
+    .hero-text {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(300px, .75fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(20,24,34,.96), rgba(13,16,24,.96));
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      padding: 27px 28px 8px;
+    }
+
+    .card-title h2 {
+      font-size: 1.3rem;
+      letter-spacing: -.025em;
+    }
+
+    .booking-content {
+      padding: 21px 28px 28px;
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 17px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #cbd0dc;
+      font-size: .84rem;
+      font-weight: 750;
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 52px;
+      outline: none;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0 14px;
+      color: var(--text);
+      background: rgba(255,255,255,.045);
+      transition: .2s ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: rgba(117,92,255,.75);
+      box-shadow: 0 0 0 4px rgba(117,92,255,.1);
+    }
+
+    input::placeholder {
+      color: #606878;
+    }
+
+    select option {
+      color: #111;
+    }
+
+    .duration-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .duration {
+      min-height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      color: #c7cbd5;
+      background: rgba(255,255,255,.035);
+      font-weight: 750;
+      transition: .2s ease;
+    }
+
+    .duration:hover {
+      border-color: rgba(117,92,255,.5);
+      background: rgba(117,92,255,.08);
+    }
+
+    .duration.selected {
+      color: white;
+      border-color: rgba(117,92,255,.85);
+      background: linear-gradient(
+        135deg,
+        rgba(117,92,255,.28),
+        rgba(78,140,255,.18)
+      );
+    }
+
+    .time-area {
+      margin-top: 24px;
+    }
+
+    .time-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .time-header strong {
+      font-size: .88rem;
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .72rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .dot.green {
+      background: var(--green);
+    }
+
+    .dot.red {
+      background: var(--red);
+    }
+
+    .dot.blue {
+      background: var(--blue);
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+    }
+
+    .time {
+      position: relative;
+      min-height: 54px;
+      overflow: hidden;
+      border: 1px solid rgba(50,214,157,.18);
+      border-radius: 14px;
+      color: #b8eddf;
+      background: rgba(50,214,157,.055);
+      font-weight: 750;
+      transition: .18s ease;
+    }
+
+    .time:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: rgba(50,214,157,.55);
+      box-shadow: 0 10px 25px rgba(0,0,0,.18);
+    }
+
+    .time.busy {
+      border-color: rgba(255,93,108,.1);
+      color: #6f7685;
+      background: rgba(255,93,108,.035);
+      cursor: not-allowed;
+      opacity: .6;
+      text-decoration: line-through;
+    }
+
+    .time.past {
+      opacity: .28;
+      cursor: not-allowed;
+      border-color: rgba(255,255,255,.04);
+      background: rgba(255,255,255,.02);
+    }
+
+    .time.selected {
+      color: white;
+      border-color: rgba(95,143,255,.8);
+      background: linear-gradient(135deg, #5d70ff, #755cff);
+      box-shadow: 0 12px 30px rgba(95,143,255,.22);
+    }
+
+    .preview {
+      margin-top: 20px;
+      padding: 16px 17px;
+      border: 1px solid rgba(117,92,255,.2);
+      border-radius: 15px;
+      color: #c4c7d5;
+      background: rgba(117,92,255,.065);
+      font-size: .9rem;
+    }
+
+    .preview strong {
+      color: white;
+    }
+
+    .book-button {
+      width: 100%;
+      min-height: 54px;
+      margin-top: 17px;
+      border: 0;
+      border-radius: 15px;
+      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      box-shadow: 0 14px 35px rgba(78,140,255,.18);
+      font-weight: 800;
+      transition: .2s ease;
+    }
+
+    .book-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(78,140,255,.28);
+    }
+
+    .book-button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      margin-top: 14px;
+      padding: 13px 14px;
+      border-radius: 13px;
+      font-size: .88rem;
+    }
+
+    .message.show {
+      display: block;
+      animation: fadeUp .25s ease both;
+    }
+
+    .message.success {
+      color: #bff6e6;
+      border: 1px solid rgba(50,214,157,.2);
+      background: rgba(50,214,157,.07);
+    }
+
+    .message.error {
+      color: #ffc3c9;
+      border: 1px solid rgba(255,93,108,.2);
+      background: rgba(255,93,108,.07);
+    }
+
+    .appointments {
+      min-height: 300px;
+    }
+
+    .appointments-list {
+      display: grid;
+      gap: 9px;
+      padding: 18px;
+    }
+
+    .appointment {
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,.025);
+      transition: .2s ease;
+    }
+
+    .appointment:hover {
+      border-color: rgba(117,92,255,.25);
+      transform: translateY(-1px);
+    }
+
+    .appointment-name {
+      margin-bottom: 5px;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .appointment-info {
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .empty {
+      display: grid;
+      place-items: center;
+      min-height: 180px;
+      color: var(--muted);
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Admin */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 16px;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(12px);
+    }
+
+    .modal.open {
+      display: grid;
+      animation: fadeIn .2s ease both;
+    }
+
+    .modal-card {
+      width: min(880px, 100%);
+      max-height: 92vh;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: #10131c;
+      box-shadow: 0 30px 100px rgba(0,0,0,.5);
+      animation: scaleIn .22s ease both;
+    }
+
+    .modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 19px 22px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(16,19,28,.94);
+      backdrop-filter: blur(15px);
+    }
+
+    .modal-header h2 {
+      font-size: 1.1rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-button,
+    .logout-button {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--muted);
+      background: rgba(255,255,255,.035);
+    }
+
+    .close-button {
+      width: 38px;
+      height: 38px;
+      font-size: 1.2rem;
+    }
+
+    .logout-button {
+      padding: 8px 10px;
+      font-size: .74rem;
+    }
+
+    .modal-body {
+      padding: 23px;
+    }
+
+    .admin-login {
+      max-width: 420px;
+      margin: 15px auto;
+    }
+
+    .admin-panel {
+      display: none;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    .admin-section {
+      margin-bottom: 28px;
+    }
+
+    .admin-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .admin-title {
+      margin-bottom: 13px;
+      font-size: .92rem;
+      font-weight: 800;
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 11px;
+    }
+
+    .admin-grid .wide {
+      grid-column: 1 / -1;
+    }
+
+    .secondary-button {
+      width: 100%;
+      min-height: 49px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      color: #d3d6df;
+      background: rgba(255,255,255,.045);
+      font-weight: 750;
+      transition: .2s ease;
+    }
+
+    .secondary-button:hover {
+      border-color: rgba(117,92,255,.45);
+      background: rgba(117,92,255,.08);
+    }
+
+    .admin-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .admin-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .admin-item strong {
+      display: block;
+      font-size: .85rem;
+    }
+
+    .admin-item span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: .75rem;
+    }
+
+    .delete-button {
+      flex: 0 0 auto;
+      border: 1px solid rgba(255,93,108,.2);
+      border-radius: 9px;
+      padding: 7px 10px;
+      color: #ff9da6;
+      background: rgba(255,93,108,.06);
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    .setup-message {
+      display: none;
+      margin-bottom: 20px;
+      padding: 13px 15px;
+      border: 1px solid rgba(247,185,85,.22);
+      border-radius: 13px;
+      color: #f0d49a;
+      background: rgba(247,185,85,.06);
+      font-size: .82rem;
+    }
+
+    .setup-message.show {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 850px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .appointments {
+        min-height: 0;
+      }
+
+      .admin-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: min(100% - 20px, 1080px);
+      }
+
+      main {
+        padding: 45px 0 60px;
+      }
+
+      h1 {
+        font-size: 3rem;
+      }
+
+      .card-title {
+        padding: 22px 18px 7px;
+      }
+
+      .booking-content {
+        padding: 18px;
+      }
+
+      .fields {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .duration-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .time-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+      }
+
+      .time {
+        min-height: 51px;
+        font-size: .84rem;
+      }
+
+      .time-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .modal-body {
+        padding: 18px;
+      }
+
+      .admin-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .admin-grid .wide {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .time-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="container header-inner">
+
+      <a class="logo" href="#">
+        <span class="logo-icon">📅</span>
+        <span>TerminPlan</span>
+      </a>
+
+      <button class="admin-button" id="openAdmin" type="button">
+        Besitzerbereich
+      </button>
+
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <section class="hero">
+        <h1>Such dir einen Termin aus.</h1>
+        <p class="hero-text">
+          Wähle eine freie Zeit und buche deinen Termin.
+        </p>
+      </section>
+
+      <div class="setup-message" id="setupMessage">
+        Firebase ist noch nicht eingerichtet. Die Seite läuft momentan im
+        lokalen Testmodus.
+      </div>
+
+      <div class="layout">
+
+        <section class="card">
+
+          <div class="card-title">
+            <h2>Termin buchen</h2>
+          </div>
+
+          <div class="booking-content">
+
+            <div class="fields">
+
+              <div class="field">
+                <label for="date">📅 Tag</label>
+                <input id="date" type="date">
+              </div>
+
+              <div class="field">
+                <label for="name">👤 Dein Name</label>
+                <input
+                  id="name"
+                  type="text"
+                  maxlength="60"
+                  autocomplete="name"
+                  placeholder="Name"
+                >
+              </div>
+
+              <div class="field full">
+
+                <label>⏱ Dauer</label>
+
+                <div class="duration-grid">
+
+                  <button class="duration" data-duration="30" type="button">
+                    30 Min.
+                  </button>
+
+                  <button class="duration" data-duration="60" type="button">
+                    1 Std.
+                  </button>
+
+                  <button class="duration" data-duration="90" type="button">
+                    1,5 Std.
+                  </button>
+
+                  <button class="duration" data-duration="120" type="button">
+                    2 Std.
+                  </button>
+
+                  <button class="duration" data-duration="180" type="button">
+                    3 Std.
+                  </button>
+
+                  <button class="duration" data-duration="240" type="button">
+                    4 Std.
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="time-area">
+
+              <div class="time-header">
+
+                <strong>🕐 Startzeit</strong>
+
+                <div class="legend">
+
+                  <span class="legend-item">
+                    <i class="dot green"></i>
+                    Frei
+                  </span>
+
+                  <span class="legend-item">
+                    <i class="dot red"></i>
+                    Nicht verfügbar
+                  </span>
+
+                  <span class="legend-item">
+                    <i class="dot blue"></i>
+                    Ausgewählt
+                  </span>
+
+                </div>
+
+              </div>
+
+              <div class="time-grid" id="timeGrid"></div>
+
+            </div>
+
+            <div class="preview" id="preview">
+              Wähle Tag, Dauer und Startzeit aus.
+            </div>
+
+            <button class="book-button" id="bookButton" type="button">
+              Termin buchen
+            </button>
+
+            <div class="message" id="bookingMessage"></div>
+
+          </div>
+
+        </section>
+
+        <section class="card appointments">
+
+          <div class="card-title">
+            <h2>Bevorstehende Termine</h2>
+          </div>
+
+          <div class="appointments-list" id="appointments"></div>
+
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <div class="modal" id="adminModal">
+
+    <div class="modal-card">
+
+      <div class="modal-header">
+
+        <h2>Besitzerbereich</h2>
+
+        <div class="modal-actions">
+
+          <button
+            class="logout-button"
+            id="logoutButton"
+            type="button"
+            style="display:none;"
+          >
+            Abmelden
+          </button>
+
+          <button
+            class="close-button"
+            id="closeAdmin"
+            type="button"
+            aria-label="Schließen"
+          >
+            ×
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="modal-body">
+
+        <div class="admin-login" id="adminLogin">
+
+          <div class="admin-title">
+            🔐 Anmeldung
+          </div>
+
+          <div class="field">
+            <label for="adminEmail">E-Mail</label>
+
+            <input
+              id="adminEmail"
+              type="email"
+              autocomplete="email"
+              placeholder="E-Mail"
+            >
+          </div>
+
+          <div class="field" style="margin-top:12px;">
+
+            <label for="adminPassword">Passwort</label>
+
+            <input
+              id="adminPassword"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Passwort"
+            >
+
+          </div>
+
+          <button class="book-button" id="loginButton" type="button">
+            Anmelden
+          </button>
+
+          <div class="message" id="loginMessage"></div>
+
+        </div>
+
+        <div class="admin-panel" id="adminPanel">
+
+          <div class="admin-section">
+
+            <div class="admin-title">
+              🚫 Sperrzeit
+            </div>
+
+            <div class="admin-grid">
+
+              <div class="field">
+                <label for="blockDate">Datum</label>
+                <input id="blockDate" type="date">
+              </div>
+
+              <div class="field">
+                <label for="blockStart">Start</label>
+                <select id="blockStart"></select>
+              </div>
+
+              <div class="field">
+                <label for="blockEnd">Ende</label>
+                <select id="blockEnd"></select>
+              </div>
+
+              <div class="field wide">
+                <button class="secondary-button" id="addBlock" type="button">
+                  Sperrzeit hinzufügen
+                </button>
+              </div>
+
+            </div>
+
+            <div class="message" id="blockMessage"></div>
+
+          </div>
+
+          <div class="admin-section">
+
+            <div class="admin-title">
+              Eigene Sperrzeiten
+            </div>
+
+            <div class="admin-list" id="blockList"></div>
+
+          </div>
+
+          <div class="admin-section">
+
+            <div class="admin-title">
+              Gebuchte Termine
+            </div>
+
+            <div class="admin-list" id="adminBookings"></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDocs,
+      getDoc,
+      setDoc,
+      addDoc,
+      deleteDoc,
+      query,
+      orderBy,
+      limit,
+      where,
+      runTransaction,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+    /*
+      ============================================================
+      TERMINPLAN EINSTELLUNGEN
+      ============================================================
+    */
+
+    const CONFIG = {
+
+      firebaseConfig: {
+        apiKey: "",
+        authDomain: "",
+        projectId: "",
+        storageBucket: "",
+        messagingSenderId: "",
+        appId: ""
+      },
+
+      adminEmail: "DEINE-EMAIL@BEISPIEL.DE",
+
+      availabilityStart: "16:00",
+      availabilityEnd: "24:00",
+
+      slotInterval: 30,
+
+      publicAppointmentLimit: 20
+
+    };
+
+
+    /*
+      ============================================================
+      FIREBASE
+      ============================================================
+    */
+
+    const firebaseConfigured =
+      CONFIG.firebaseConfig.apiKey &&
+      CONFIG.firebaseConfig.authDomain &&
+      CONFIG.firebaseConfig.projectId &&
+      CONFIG.firebaseConfig.appId;
+
+    let app = null;
+    let auth = null;
+    let db = null;
+
+    if (firebaseConfigured) {
+
+      app = initializeApp(CONFIG.firebaseConfig);
+
+      auth = getAuth(app);
+
+      db = getFirestore(app);
+
+    }
+
+
+    /*
+      ============================================================
+      ELEMENTE
+      ============================================================
+    */
+
+    const dateInput =
+      document.getElementById("date");
+
+    const nameInput =
+      document.getElementById("name");
+
+    const timeGrid =
+      document.getElementById("timeGrid");
+
+    const preview =
+      document.getElementById("preview");
+
+    const bookButton =
+      document.getElementById("bookButton");
+
+    const bookingMessage =
+      document.getElementById("bookingMessage");
+
+    const appointments =
+      document.getElementById("appointments");
+
+    const setupMessage =
+      document.getElementById("setupMessage");
+
+    const openAdmin =
+      document.getElementById("openAdmin");
+
+    const closeAdmin =
+      document.getElementById("closeAdmin");
+
+    const adminModal =
+      document.getElementById("adminModal");
+
+    const adminLogin =
+      document.getElementById("adminLogin");
+
+    const adminPanel =
+      document.getElementById("adminPanel");
+
+    const adminEmail =
+      document.getElementById("adminEmail");
+
+    const adminPassword =
+      document.getElementById("adminPassword");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const loginMessage =
+      document.getElementById("loginMessage");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    const blockDate =
+      document.getElementById("blockDate");
+
+    const blockStart =
+      document.getElementById("blockStart");
+
+    const blockEnd =
+      document.getElementById("blockEnd");
+
+    const addBlock =
+      document.getElementById("addBlock");
+
+    const blockMessage =
+      document.getElementById("blockMessage");
+
+    const blockList =
+      document.getElementById("blockList");
+
+    const adminBookings =
+      document.getElementById("adminBookings");
+
+
+    /*
+      ============================================================
+      STATUS
+      ============================================================
+    */
+
+    const state = {
+
+      date: "",
+
+      time: "",
+
+      duration: 0,
+
+      bookings: [],
+
+      blocks: [],
+
+      admin: null
+
+    };
+
+
+    /*
+      ============================================================
+      HILFSFUNKTIONEN
+      ============================================================
+    */
+
+    function pad(number) {
+
+      return String(number).padStart(2, "0");
+
+    }
+
+
+    function today() {
+
+      const now = new Date();
+
+      return [
+        now.getFullYear(),
+        pad(now.getMonth() + 1),
+        pad(now.getDate())
+      ].join("-");
+
+    }
+
+
+    function timeToMinutes(time) {
+
+      const parts =
+        time.split(":").map(Number);
+
+      return parts[0] * 60 + parts[1];
+
+    }
+
+
+    function minutesToTime(minutes) {
+
+      return (
+        pad(Math.floor(minutes / 60)) +
+        ":" +
+        pad(minutes % 60)
+      );
+
+    }
+
+
+    function addMinutes(time, minutes) {
+
+      return minutesToTime(
+        timeToMinutes(time) + minutes
+      );
+
+    }
+
+
+    function displayDate(date) {
+
+      return new Intl.DateTimeFormat(
+        "de-DE",
+        {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        }
+      ).format(
+        new Date(date + "T12:00:00")
+      );
+
+    }
+
+
+    function overlaps(
+      startA,
+      endA,
+      startB,
+      endB
+    ) {
+
+      return (
+        startA < endB &&
+        endA > startB
+      );
+
+    }
+
+
+    function isPast(date, time) {
+
+      return (
+        new Date(
+          `${date}T${time}:00`
+        ).getTime() < Date.now()
+      );
+
+    }
+
+
+    function showMessage(
+      element,
+      text,
+      type
+    ) {
+
+      element.textContent = text;
+
+      element.className =
+        "message show " + type;
+
+    }
+
+
+    function clearMessage(element) {
+
+      element.textContent = "";
+
+      element.className =
+        "message";
+
+    }
+
+
+    function generateSlots() {
+
+      const slots = [];
+
+      const start =
+        timeToMinutes(
+          CONFIG.availabilityStart
+        );
+
+      const end =
+        timeToMinutes(
+          CONFIG.availabilityEnd
+        );
+
+      for (
+        let time = start;
+        time < end;
+        time += CONFIG.slotInterval
+      ) {
+
+        slots.push(
+          minutesToTime(time)
+        );
+
+      }
+
+      return slots;
+
+    }
+
+
+    function slotIds(
+      date,
+      start,
+      duration
+    ) {
+
+      const result = [];
+
+      const first =
+        timeToMinutes(start);
+
+      const count =
+        duration / CONFIG.slotInterval;
+
+      for (
+        let i = 0;
+        i < count;
+        i++
+      ) {
+
+        result.push(
+          `${date}_${minutesToTime(
+            first +
+            i * CONFIG.slotInterval
+          ).replace(":", "-")}`
+        );
+
+      }
+
+      return result;
+
+    }
+
+
+    /*
+      ============================================================
+      LOKALER TESTMODUS
+      ============================================================
+    */
+
+    const LOCAL_BOOKINGS =
+      "terminplan_firebase_bookings";
+
+    const LOCAL_BLOCKS =
+      "terminplan_firebase_blocks";
+
+
+    function getLocalBookings() {
+
+      try {
+
+        return JSON.parse(
+          localStorage.getItem(
+            LOCAL_BOOKINGS
+          ) || "[]"
+        );
+
+      } catch {
+
+        return [];
+
+      }
+
+    }
+
+
+    function getLocalBlocks() {
+
+      try {
+
+        return JSON.parse(
+          localStorage.getItem(
+            LOCAL_BLOCKS
+          ) || "[]"
+        );
+
+      } catch {
+
+        return [];
+
+      }
+
+    }
+
+
+    function saveLocalBookings(data) {
+
+      localStorage.setItem(
+        LOCAL_BOOKINGS,
+        JSON.stringify(data)
+      );
+
+    }
+
+
+    function saveLocalBlocks(data) {
+
+      localStorage.setItem(
+        LOCAL_BLOCKS,
+        JSON.stringify(data)
+      );
+
+    }
+
+
+    /*
+      ============================================================
+      DATEN LADEN
+      ============================================================
+    */
+
+    async function loadBookings() {
+
+      if (!firebaseConfigured) {
+
+        state.bookings =
+          getLocalBookings();
+
+        return;
+
+      }
+
+      const result =
+        await getDocs(
+          query(
+            collection(db, "bookings"),
+            orderBy("date"),
+            orderBy("start"),
+            limit(100)
+          )
+        );
+
+      state.bookings =
+        result.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+    }
+
+
+    async function loadBlocks() {
+
+      if (!firebaseConfigured) {
+
+        state.blocks =
+          getLocalBlocks();
+
+        return;
+
+      }
+
+      const result =
+        await getDocs(
+          query(
+            collection(db, "blocks"),
+            orderBy("date"),
+            orderBy("start"),
+            limit(200)
+          )
+        );
+
+      state.blocks =
+        result.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+    }
+
+
+    async function loadData() {
+
+      await Promise.all([
+        loadBookings(),
+        loadBlocks()
+      ]);
+
+      renderTimes();
+
+      renderAppointments();
+
+      renderAdminLists();
+
+    }
+
+
+    /*
+      ============================================================
+      VERFÜGBARKEIT
+      ============================================================
+    */
+
+    function available(
+      date,
+      start,
+      duration
+    ) {
+
+      const startMinutes =
+        timeToMinutes(start);
+
+      const endMinutes =
+        startMinutes + duration;
+
+      if (
+        endMinutes >
+        timeToMinutes(
+          CONFIG.availabilityEnd
+        )
+      ) {
+
+        return false;
+
+      }
+
+
+      const bookingConflict =
+        state.bookings.some(booking => {
+
+          if (booking.date !== date) {
+            return false;
+          }
+
+          return overlaps(
+            startMinutes,
+            endMinutes,
+            timeToMinutes(
+              booking.start
+            ),
+            timeToMinutes(
+              booking.end
+            )
+          );
+
+        });
+
+
+      if (bookingConflict) {
+        return false;
+      }
+
+
+      const blockConflict =
+        state.blocks.some(block => {
+
+          if (block.date !== date) {
+            return false;
+          }
+
+          return overlaps(
+            startMinutes,
+            endMinutes,
+            timeToMinutes(
+              block.start
+            ),
+            timeToMinutes(
+              block.end
+            )
+          );
+
+        });
+
+
+      return !blockConflict;
+
+    }
+
+
+    /*
+      ============================================================
+      ZEITEN ANZEIGEN
+      ============================================================
+    */
+
+    function renderTimes() {
+
+      timeGrid.innerHTML = "";
+
+      if (!state.date) {
+
+        timeGrid.innerHTML = `
+          <div class="empty" style="grid-column:1/-1;">
+            Tag auswählen.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      if (!state.duration) {
+
+        timeGrid.innerHTML = `
+          <div class="empty" style="grid-column:1/-1;">
+            Dauer auswählen.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      generateSlots().forEach(time => {
+
+        const button =
+          document.createElement("button");
+
+        button.type = "button";
+
+        button.className = "time";
+
+        button.textContent = time;
+
+
+        const free =
+          available(
+            state.date,
+            time,
+            state.duration
+          );
+
+
+        if (!free) {
+
+          button.classList.add("busy");
+
+          button.disabled = true;
+
+        }
+
+
+        if (
+          isPast(
+            state.date,
+            time
+          )
+        ) {
+
+          button.classList.add("past");
+
+          button.disabled = true;
+
+        }
+
+
+        if (
+          state.time === time &&
+          free &&
+          !button.disabled
+        ) {
+
+          button.classList.add(
+            "selected"
+          );
+
+        }
+
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            state.time = time;
+
+            clearMessage(
+              bookingMessage
+            );
+
+            renderTimes();
+
+            renderPreview();
+
+            updateBookButton();
+
+          }
+        );
+
+
+        timeGrid.appendChild(button);
+
+      });
+
+    }
+
+
+    /*
+      ============================================================
+      VORSCHAU
+      ============================================================
+    */
+
+    function renderPreview() {
+
+      if (
+        !state.date ||
+        !state.time ||
+        !state.duration
+      ) {
+
+        preview.textContent =
+          "Wähle Tag, Dauer und Startzeit aus.";
+
+        return;
+
+      }
+
+
+      const end =
+        addMinutes(
+          state.time,
+          state.duration
+        );
+
+
+      preview.innerHTML =
+        `Du möchtest am <strong>${
+          displayDate(state.date)
+        }</strong> von <strong>${
+          state.time
+        }–${
+          end
+        } Uhr</strong> einen Termin buchen.`;
+
+    }
+
+
+    /*
+      ============================================================
+      BUTTON
+      ============================================================
+    */
+
+    function updateBookButton() {
+
+      bookButton.disabled = !(
+        state.date &&
+        state.time &&
+        state.duration &&
+        nameInput.value.trim()
+      );
+
+    }
+
+
+    /*
+      ============================================================
+      BUCHUNG
+      ============================================================
+    */
+
+    async function book() {
+
+      clearMessage(
+        bookingMessage
+      );
+
+
+      const name =
+        nameInput.value.trim();
+
+
+      if (!name) {
+
+        showMessage(
+          bookingMessage,
+          "Bitte gib deinen Namen ein.",
+          "error"
+        );
+
+        nameInput.focus();
+
+        return;
+
+      }
+
+
+      if (!state.date) {
+
+        showMessage(
+          bookingMessage,
+          "Bitte wähle einen Tag aus.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (!state.duration) {
+
+        showMessage(
+          bookingMessage,
+          "Bitte wähle eine Dauer aus.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (!state.time) {
+
+        showMessage(
+          bookingMessage,
+          "Bitte wähle eine Startzeit aus.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (
+        !available(
+          state.date,
+          state.time,
+          state.duration
+        )
+      ) {
+
+        showMessage(
+          bookingMessage,
+          "Diese Zeit ist nicht mehr verfügbar.",
+          "error"
+        );
+
+        await loadData();
+
+        return;
+
+      }
+
+
+      const end =
+        addMinutes(
+          state.time,
+          state.duration
+        );
+
+
+      bookButton.disabled = true;
+
+      bookButton.textContent =
+        "Wird gebucht …";
+
+
+      try {
+
+        if (!firebaseConfigured) {
+
+          const bookings =
+            getLocalBookings();
+
+
+          const conflict =
+            bookings.some(booking => {
+
+              if (
+                booking.date !==
+                state.date
+              ) {
+
+                return false;
+
+              }
+
+
+              return overlaps(
+                timeToMinutes(
+                  state.time
+                ),
+                timeToMinutes(
+                  end
+                ),
+                timeToMinutes(
+                  booking.start
+                ),
+                timeToMinutes(
+                  booking.end
+                )
+              );
+
+            });
+
+
+          const blockConflict =
+            state.blocks.some(block => {
+
+              if (
+                block.date !==
+                state.date
+              ) {
+
+                return false;
+
+              }
+
+
+              return overlaps(
+                timeToMinutes(
+                  state.time
+                ),
+                timeToMinutes(
+                  end
+                ),
+                timeToMinutes(
+                  block.start
+                ),
+                timeToMinutes(
+                  block.end
+                )
+              );
+
+            });
+
+
+          if (
+            conflict ||
+            blockConflict
+          ) {
+
+            throw new Error(
+              "TIME_UNAVAILABLE"
+            );
+
+          }
+
+
+          bookings.push({
+
+            id:
+              Date.now().toString(),
+
+            name,
+
+            date:
+              state.date,
+
+            start:
+              state.time,
+
+            end,
+
+            duration:
+              state.duration
+
+          });
+
+
+          saveLocalBookings(
+            bookings
+          );
+
+        } else {
+
+          /*
+            Jeder 30-Minuten-Abschnitt bekommt
+            einen eigenen Firestore-Datensatz.
+
+            Dadurch kann eine Transaktion nicht
+            gleichzeitig denselben Zeitabschnitt
+            zweimal reservieren.
+          */
+
+          const locks =
+            slotIds(
+              state.date,
+              state.time,
+              state.duration
+            );
+
+
+          const bookingId =
+            crypto.randomUUID();
+
+
+          await runTransaction(
+            db,
+            async transaction => {
+
+              const lockReferences =
+                locks.map(id =>
+                  doc(
+                    db,
+                    "slots",
+                    id
+                  )
+                );
+
+
+              const lockSnapshots = [];
+
+              for (
+                const reference
+                of lockReferences
+              ) {
+
+                lockSnapshots.push(
+                  await transaction.get(
+                    reference
+                  )
+                );
+
+              }
+
+
+              for (
+                const snapshot
+                of lockSnapshots
+              ) {
+
+                if (
+                  snapshot.exists()
+                ) {
+
+                  throw new Error(
+                    "TIME_UNAVAILABLE"
+                  );
+
+                }
+
+              }
+
+
+              const bookingReference =
+                doc(
+                  db,
+                  "bookings",
+                  bookingId
+                );
+
+
+              transaction.set(
+                bookingReference,
+                {
+                  name,
+                  date:
+                    state.date,
+                  start:
+                    state.time,
+                  end,
+                  duration:
+                    state.duration,
+                  createdAt:
+                    serverTimestamp()
+                }
+              );
+
+
+              lockReferences.forEach(
+                reference => {
+
+                  transaction.set(
+                    reference,
+                    {
+                      type: "booking",
+                      bookingId,
+                      date:
+                        state.date
+                    }
+                  );
+
+                }
+              );
+
+            }
+          );
+
+        }
+
+
+        showMessage(
+          bookingMessage,
+          "✓ Termin erfolgreich gebucht.",
+          "success"
+        );
+
+
+        state.time = "";
+
+        state.duration = 0;
+
+
+        document
+          .querySelectorAll(".duration")
+          .forEach(button =>
+            button.classList.remove(
+              "selected"
+            )
+          );
+
+
+        nameInput.value = "";
+
+
+        await loadData();
+
+
+        renderPreview();
+
+        updateBookButton();
+
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        if (
+          error.message ===
+          "TIME_UNAVAILABLE"
+        ) {
+
+          showMessage(
+            bookingMessage,
+            "Diese Zeit wurde gerade vergeben. Bitte wähle eine andere.",
+            "error"
+          );
+
+        } else {
+
+          showMessage(
+            bookingMessage,
+            "Der Termin konnte nicht gebucht werden.",
+            "error"
+          );
+
+        }
+
+
+        await loadData();
+
+      } finally {
+
+        bookButton.textContent =
+          "Termin buchen";
+
+        updateBookButton();
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      TERMINE
+      ============================================================
+    */
+
+    function renderAppointments() {
+
+      appointments.innerHTML = "";
+
+
+      const currentDate =
+        today();
+
+
+      const list =
+        [...state.bookings]
+          .filter(
+            booking =>
+              booking.date >=
+              currentDate
+          )
+          .sort(
+            (a, b) =>
+              `${a.date}${a.start}`
+                .localeCompare(
+                  `${b.date}${b.start}`
+                )
+          )
+          .slice(
+            0,
+            CONFIG.publicAppointmentLimit
+          );
+
+
+      if (!list.length) {
+
+        appointments.innerHTML = `
+          <div class="empty">
+            Noch keine Termine.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      list.forEach(booking => {
+
+        const item =
+          document.createElement(
+            "article"
+          );
+
+        item.className =
+          "appointment";
+
+
+        item.innerHTML = `
+          <div class="appointment-name"></div>
+          <div class="appointment-info">
+            📅 ${displayDate(booking.date)}
+            · 🕐 ${booking.start}–${booking.end}
+          </div>
+        `;
+
+
+        item.querySelector(
+          ".appointment-name"
+        ).textContent =
+          booking.name;
+
+
+        appointments.appendChild(
+          item
+        );
+
+      });
+
+    }
+
+
+    /*
+      ============================================================
+      ADMIN
+      ============================================================
+    */
+
+    function populateAdminTimes() {
+
+      blockStart.innerHTML = "";
+
+      blockEnd.innerHTML = "";
+
+
+      generateSlots().forEach(time => {
+
+        const startOption =
+          document.createElement(
+            "option"
+          );
+
+        startOption.value = time;
+
+        startOption.textContent = time;
+
+        blockStart.appendChild(
+          startOption
+        );
+
+
+        const endOption =
+          document.createElement(
+            "option"
+          );
+
+        endOption.value = time;
+
+        endOption.textContent = time;
+
+        blockEnd.appendChild(
+          endOption
+        );
+
+      });
+
+
+      const endOption =
+        document.createElement(
+          "option"
+        );
+
+      endOption.value =
+        CONFIG.availabilityEnd;
+
+      endOption.textContent =
+        CONFIG.availabilityEnd;
+
+      blockEnd.appendChild(
+        endOption
+      );
+
+
+      blockStart.value =
+        CONFIG.availabilityStart;
+
+      blockEnd.value =
+        CONFIG.availabilityEnd;
+
+    }
+
+
+    async function addBlockTime() {
+
+      clearMessage(
+        blockMessage
+      );
+
+
+      const date =
+        blockDate.value;
+
+      const start =
+        blockStart.value;
+
+      const end =
+        blockEnd.value;
+
+
+      if (
+        !date ||
+        !start ||
+        !end
+      ) {
+
+        showMessage(
+          blockMessage,
+          "Bitte alle Felder ausfüllen.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (
+        timeToMinutes(start) >=
+        timeToMinutes(end)
+      ) {
+
+        showMessage(
+          blockMessage,
+          "Die Endzeit muss nach der Startzeit liegen.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      const bookingConflict =
+        state.bookings.some(
+          booking => {
+
+            if (
+              booking.date !==
+              date
+            ) {
+
+              return false;
+
+            }
+
+
+            return overlaps(
+              timeToMinutes(start),
+              timeToMinutes(end),
+              timeToMinutes(
+                booking.start
+              ),
+              timeToMinutes(
+                booking.end
+              )
+            );
+
+          }
+        );
+
+
+      if (bookingConflict) {
+
+        showMessage(
+          blockMessage,
+          "Die Sperrzeit überschneidet sich mit einem Termin.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        if (!firebaseConfigured) {
+
+          const blocks =
+            getLocalBlocks();
+
+
+          blocks.push({
+
+            id:
+              Date.now().toString(),
+
+            date,
+
+            start,
+
+            end
+
+          });
+
+
+          saveLocalBlocks(
+            blocks
+          );
+
+        } else {
+
+          const startMinutes =
+            timeToMinutes(start);
+
+          const endMinutes =
+            timeToMinutes(end);
+
+          const lockIds = [];
+
+
+          for (
+            let minute =
+              startMinutes;
+            minute < endMinutes;
+            minute +=
+              CONFIG.slotInterval
+          ) {
+
+            lockIds.push(
+              `${date}_${minutesToTime(
+                minute
+              ).replace(":", "-")}`
+            );
+
+          }
+
+
+          const blockReference =
+            doc(
+              collection(
+                db,
+                "blocks"
+              )
+            );
+
+
+          await runTransaction(
+            db,
+            async transaction => {
+
+              const references =
+                lockIds.map(id =>
+                  doc(
+                    db,
+                    "slots",
+                    id
+                  )
+                );
+
+
+              const snapshots = [];
+
+              for (
+                const reference
+                of references
+              ) {
+
+                snapshots.push(
+                  await transaction.get(
+                    reference
+                  )
+                );
+
+              }
+
+
+              snapshots.forEach(
+                snapshot => {
+
+                  if (
+                    snapshot.exists()
+                  ) {
+
+                    throw new Error(
+                      "TIME_UNAVAILABLE"
+                    );
+
+                  }
+
+                }
+              );
+
+
+              transaction.set(
+                blockReference,
+                {
+                  date,
+                  start,
+                  end,
+                  createdAt:
+                    serverTimestamp()
+                }
+              );
+
+
+              references.forEach(
+                reference => {
+
+                  transaction.set(
+                    reference,
+                    {
+                      type: "block",
+                      blockId:
+                        blockReference.id,
+                      date
+                    }
+                  );
+
+                }
+              );
+
+            }
+          );
+
+        }
+
+
+        showMessage(
+          blockMessage,
+          "✓ Sperrzeit hinzugefügt.",
+          "success"
+        );
+
+
+        await loadData();
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        if (
+          error.message ===
+          "TIME_UNAVAILABLE"
+        ) {
+
+          showMessage(
+            blockMessage,
+            "Diese Zeit ist bereits belegt.",
+            "error"
+          );
+
+        } else {
+
+          showMessage(
+            blockMessage,
+            "Die Sperrzeit konnte nicht gespeichert werden.",
+            "error"
+          );
+
+        }
+
+      }
+
+    }
+
+
+    async function deleteBlockTime(
+      block
+    ) {
+
+      if (
+        !confirm(
+          "Sperrzeit wirklich löschen?"
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      try {
+
+        if (!firebaseConfigured) {
+
+          const blocks =
+            getLocalBlocks()
+              .filter(
+                item =>
+                  String(item.id) !==
+                  String(block.id)
+              );
+
+
+          saveLocalBlocks(
+            blocks
+          );
+
+        } else {
+
+          const locks =
+            slotIds(
+              block.date,
+              block.start,
+              timeToMinutes(
+                block.end
+              ) -
+              timeToMinutes(
+                block.start
+              )
+            );
+
+
+          await runTransaction(
+            db,
+            async transaction => {
+
+              const blockReference =
+                doc(
+                  db,
+                  "blocks",
+                  block.id
+                );
+
+
+              const references =
+                locks.map(id =>
+                  doc(
+                    db,
+                    "slots",
+                    id
+                  )
+                );
+
+
+              const snapshots = [];
+
+              for (
+                const reference
+                of references
+              ) {
+
+                snapshots.push(
+                  await transaction.get(
+                    reference
+                  )
+                );
+
+              }
+
+
+              transaction.delete(
+                blockReference
+              );
+
+
+              snapshots.forEach(
+                (snapshot, index) => {
+
+                  if (
+                    snapshot.exists() &&
+                    snapshot.data().type ===
+                      "block" &&
+                    snapshot.data().blockId ===
+                      block.id
+                  ) {
+
+                    transaction.delete(
+                      references[index]
+                    );
+
+                  }
+
+                }
+              );
+
+            }
+          );
+
+        }
+
+
+        await loadData();
+
+      } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+          blockMessage,
+          "Die Sperrzeit konnte nicht gelöscht werden.",
+          "error"
+        );
+
+      }
+
+    }
+
+
+    function renderAdminLists() {
+
+      if (!state.admin) {
+        return;
+      }
+
+
+      blockList.innerHTML = "";
+
+      adminBookings.innerHTML = "";
+
+
+      if (!state.blocks.length) {
+
+        blockList.innerHTML = `
+          <div class="empty">
+            Keine Sperrzeiten.
+          </div>
+        `;
+
+      } else {
+
+        [...state.blocks]
+          .sort(
+            (a, b) =>
+              `${a.date}${a.start}`
+                .localeCompare(
+                  `${b.date}${b.start}`
+                )
+          )
+          .forEach(block => {
+
+            const item =
+              document.createElement(
+                "div"
+              );
+
+            item.className =
+              "admin-item";
+
+
+            item.innerHTML = `
+              <div>
+                <strong>
+                  ${displayDate(block.date)}
+                </strong>
+                <span>
+                  ${block.start}–${block.end}
+                </span>
+              </div>
+
+              <button
+                class="delete-button"
+                type="button"
+              >
+                Löschen
+              </button>
+            `;
+
+
+            item.querySelector(
+              ".delete-button"
+            ).addEventListener(
+              "click",
+              () =>
+                deleteBlockTime(
+                  block
+                )
+            );
+
+
+            blockList.appendChild(
+              item
+            );
+
+          });
+
+      }
+
+
+      if (!state.bookings.length) {
+
+        adminBookings.innerHTML = `
+          <div class="empty">
+            Keine gebuchten Termine.
+          </div>
+        `;
+
+      } else {
+
+        [...state.bookings]
+          .sort(
+            (a, b) =>
+              `${a.date}${a.start}`
+                .localeCompare(
+                  `${b.date}${b.start}`
+                )
+          )
+          .forEach(booking => {
+
+            const item =
+              document.createElement(
+                "div"
+              );
+
+            item.className =
+              "admin-item";
+
+
+            item.innerHTML = `
+              <div>
+                <strong></strong>
+                <span>
+                  ${displayDate(booking.date)}
+                  · ${booking.start}–${booking.end}
+                </span>
+              </div>
+            `;
+
+
+            item.querySelector(
+              "strong"
+            ).textContent =
+              booking.name;
+
+
+            adminBookings.appendChild(
+              item
+            );
+
+          });
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      LOGIN
+      ============================================================
+    */
+
+    async function login() {
+
+      clearMessage(
+        loginMessage
+      );
+
+
+      if (!firebaseConfigured) {
+
+        showMessage(
+          loginMessage,
+          "Firebase ist noch nicht eingerichtet.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      const email =
+        adminEmail.value.trim();
+
+      const password =
+        adminPassword.value;
+
+
+      if (
+        !email ||
+        !password
+      ) {
+
+        showMessage(
+          loginMessage,
+          "Bitte E-Mail und Passwort eingeben.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      loginButton.disabled =
+        true;
+
+      loginButton.textContent =
+        "Anmeldung …";
+
+
+      try {
+
+        const result =
+          await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+
+        if (
+          result.user.email
+            .toLowerCase() !==
+          CONFIG.adminEmail
+            .toLowerCase()
+        ) {
+
+          await signOut(auth);
+
+          throw new Error(
+            "NOT_ADMIN"
+          );
+
+        }
+
+
+        state.admin =
+          result.user;
+
+
+        showAdmin();
+
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+          loginMessage,
+          "Anmeldung fehlgeschlagen.",
+          "error"
+        );
+
+      } finally {
+
+        loginButton.disabled =
+          false;
+
+        loginButton.textContent =
+          "Anmelden";
+
+      }
+
+    }
+
+
+    function showAdmin() {
+
+      adminLogin.style.display =
+        "none";
+
+      adminPanel.classList.add(
+        "active"
+      );
+
+      logoutButton.style.display =
+        "inline-block";
+
+      renderAdminLists();
+
+    }
+
+
+    function hideAdmin() {
+
+      adminLogin.style.display =
+        "block";
+
+      adminPanel.classList.remove(
+        "active"
+      );
+
+      logoutButton.style.display =
+        "none";
+
+    }
+
+
+    async function logout() {
+
+      if (auth) {
+
+        await signOut(auth);
+
+      }
+
+      state.admin = null;
+
+      hideAdmin();
+
+    }
+
+
+    /*
+      ============================================================
+      EVENTS
+      ============================================================
+    */
+
+    document
+      .querySelectorAll(".duration")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            document
+              .querySelectorAll(
+                ".duration"
+              )
+              .forEach(item =>
+                item.classList.remove(
+                  "selected"
+                )
+              );
+
+
+            button.classList.add(
+              "selected"
+            );
+
+
+            state.duration =
+              Number(
+                button.dataset.duration
+              );
+
+
+            state.time = "";
+
+
+            renderTimes();
+
+            renderPreview();
+
+            updateBookButton();
+
+          }
+        );
+
+      });
+
+
+    dateInput.addEventListener(
+      "change",
+      () => {
+
+        state.date =
+          dateInput.value;
+
+        state.time = "";
+
+        renderTimes();
+
+        renderPreview();
+
+        updateBookButton();
+
+      }
+    );
+
+
+    nameInput.addEventListener(
+      "input",
+      updateBookButton
+    );
+
+
+    bookButton.addEventListener(
+      "click",
+      book
+    );
+
+
+    openAdmin.addEventListener(
+      "click",
+      () => {
+
+        adminModal.classList.add(
+          "open"
+        );
+
+        document.body.style.overflow =
+          "hidden";
+
+      }
+    );
+
+
+    closeAdmin.addEventListener(
+      "click",
+      () => {
+
+        adminModal.classList.remove(
+          "open"
+        );
+
+        document.body.style.overflow =
+          "";
+
+      }
+    );
+
+
+    adminModal.addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target ===
+          adminModal
+        ) {
+
+          adminModal.classList.remove(
+            "open"
+          );
+
+          document.body.style.overflow =
+            "";
+
+        }
+
+      }
+    );
+
+
+    loginButton.addEventListener(
+      "click",
+      login
+    );
+
+
+    logoutButton.addEventListener(
+      "click",
+      logout
+    );
+
+
+    addBlock.addEventListener(
+      "click",
+      addBlockTime
+    );
+
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key === "Escape"
+        ) {
+
+          adminModal.classList.remove(
+            "open"
+          );
+
+          document.body.style.overflow =
+            "";
+
+        }
+
+      }
+    );
+
+
+    /*
+      ============================================================
+      START
+      ============================================================
+    */
+
+    async function initialize() {
+
+      dateInput.min =
+        today();
+
+      blockDate.min =
+        today();
+
+
+      dateInput.value =
+        today();
+
+      blockDate.value =
+        today();
+
+
+      state.date =
+        today();
+
+
+      populateAdminTimes();
+
+
+      if (!firebaseConfigured) {
+
+        setupMessage.classList.add(
+          "show"
+        );
+
+      }
+
+
+      try {
+
+        await loadData();
+
+      } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+          bookingMessage,
+          "Die Daten konnten nicht geladen werden.",
+          "error"
+        );
+
+      }
+
+
+      renderTimes();
+
+      renderPreview();
+
+      renderAppointments();
+
+      updateBookButton();
+
+
+      if (auth) {
+
+        onAuthStateChanged(
+          auth,
+          user => {
+
+            if (
+              user &&
+              user.email &&
+              user.email.toLowerCase() ===
+                CONFIG.adminEmail.toLowerCase()
+            ) {
+
+              state.admin =
+                user;
+
+              showAdmin();
+
+            } else {
+
+              state.admin =
+                null;
+
+              hideAdmin();
+
+            }
+
+          }
+        );
+
+      }
+
+    }
+
+
+    initialize();
+
+  </script>
+
+</body>
+</html>
